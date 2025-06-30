@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from '@/views/Home.vue'
+import HomeView from '@/views/HomeView.vue'
 import ReactivityDemo from '@/views/ReactivityDemo.vue'
 import DebounceThrottleDemo from '@/views/DebounceThrottleDemo.vue'
 import ReRenderDemo from '@/views/ReRenderDemo.vue'
 import LazyLoadingDemo from '@/views/LazyLoadingDemo.vue'
 
+
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'HomeView',
+        component: HomeView
     },
     {
         path: '/reactivity',

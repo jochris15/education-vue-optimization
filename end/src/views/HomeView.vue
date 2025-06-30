@@ -1,11 +1,6 @@
 <script setup>
 import { ref, onMounted, onUpdated } from "vue";
 
-// Set component name for multi-word requirement
-defineOptions({
-  name: "HomeView",
-});
-
 // Performance tracking
 const renderCount = ref(0);
 
@@ -103,16 +98,16 @@ onUpdated(() => {
     </section>
 
     <!-- Demo Cards -->
-    <section>
+    <section class="mt-20">
       <h2 class="text-3xl font-bold text-center mb-8 text-neo-black">
         🛠️ INTERACTIVE DEMOS
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <router-link
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <RouterLink
           v-for="demo in demos"
           :key="demo.path"
           :to="demo.path"
-          class="neo-card hover:shadow-neo-xl transition-all duration-200 hover:-translate-y-1 block"
+          class="neo-card hover:shadow-neo-xl transition-all duration-200 hover:-translate-y-2 block"
           :class="demo.bgColor"
         >
           <div class="text-4xl mb-4">{{ demo.icon }}</div>
@@ -127,28 +122,7 @@ onUpdated(() => {
               {{ technique }}
             </span>
           </div>
-        </router-link>
-      </div>
-    </section>
-
-    <!-- Performance Counter -->
-    <section class="neo-section bg-neo-green">
-      <h2 class="text-3xl font-bold mb-6 text-neo-black">📊 REAL-TIME PERFORMANCE</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="neo-card bg-neo-white text-center">
-          <div class="text-3xl font-bold text-neo-pink">{{ renderCount }}</div>
-          <div class="text-sm text-neo-black">Component Renders</div>
-        </div>
-        <div class="neo-card bg-neo-white text-center">
-          <div class="text-3xl font-bold text-neo-blue">{{ Date.now() % 10000 }}</div>
-          <div class="text-sm text-neo-black">Current Timestamp</div>
-        </div>
-        <div class="neo-card bg-neo-white text-center">
-          <div class="text-3xl font-bold text-neo-purple">
-            {{ Math.floor(Math.random() * 100) }}%
-          </div>
-          <div class="text-sm text-neo-black">Optimization Score</div>
-        </div>
+        </RouterLink>
       </div>
     </section>
   </div>

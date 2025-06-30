@@ -1,59 +1,107 @@
 <script setup>
-import { ref, reactive, shallowRef, computed, watch, onUpdated } from "vue";
+import { ref, reactive, shallowReactive, computed, watch } from "vue";
 
-// Deep reactivity example
-const deepUser = reactive({
+// Create large nested objects to simulate real-world scenarios
+const createLargeObject = (prefix = "Item") => ({
   profile: {
-    name: "John Doe",
+    name: `${prefix} User`,
     age: 25,
-    skills: ["Vue.js", "JavaScript"],
+    skills: Array.from({ length: 100 }, (_, i) => `Skill ${i + 1}`),
+    preferences: {
+      theme: "dark",
+      language: "en",
+      notifications: {
+        email: true,
+        sms: false,
+        push: true,
+        marketing: Array.from({ length: 50 }, (_, i) => `Pref ${i}`),
+      },
+    },
   },
-  settings: {
-    theme: "dark",
-    notifications: true,
+  metadata: {
+    lastLogin: new Date().toISOString(),
+    sessionData: Array.from({ length: 200 }, (_, i) => ({ id: i, value: Math.random() })),
+    cache: Array.from({ length: 100 }, (_, i) => ({
+      key: `cache_${i}`,
+      data: Math.random(),
+    })),
   },
 });
 
+// Deep reactivity example - tracks ALL nested properties
+const deepUser = reactive(createLargeObject("Deep"));
 const deepRenderCount = ref(0);
+const deepWatchCount = ref(0);
+const deepPerformanceTime = ref(0);
 
-// Shallow reactivity example
-const shallowUser = shallowRef({
-  profile: {
-    name: "Jane Smith",
-    age: 28,
-    skills: ["React", "TypeScript"],
-  },
-  settings: {
-    theme: "light",
-    notifications: false,
-  },
-});
-
+// Shallow reactivity example - only tracks top-level changes
+const shallowUser = shallowReactive(createLargeObject("Shallow"));
 const shallowRenderCount = ref(0);
+const shallowWatchCount = ref(0);
+const shallowPerformanceTime = ref(0);
 
 // Skills to add randomly
 const skills = ["Vue.js", "React", "Angular", "Node.js", "Python", "Java", "Go", "Rust"];
 
+// Deep reactivity operations
 const addDeepSkill = () => {
+  const start = performance.now();
   const randomSkill = skills[Math.floor(Math.random() * skills.length)];
   deepUser.profile.skills.push(randomSkill);
+  deepPerformanceTime.value = performance.now() - start;
 };
 
-const updateShallowUser = () => {
-  // This will trigger reactivity because we're replacing the entire object
-  shallowUser.value = {
-    ...shallowUser.value,
-    profile: {
-      ...shallowUser.value.profile,
-      name: "Updated Name",
-      age: Math.floor(Math.random() * 50) + 20,
-    },
+const updateDeepNestedProperty = () => {
+  const start = performance.now();
+  // This will trigger deep watchers because reactive() tracks nested changes
+  deepUser.profile.preferences.notifications.email = !deepUser.profile.preferences
+    .notifications.email;
+  deepPerformanceTime.value = performance.now() - start;
+};
+
+const massUpdateDeepObject = () => {
+  const start = performance.now();
+  // Multiple nested updates - each one triggers reactivity
+  for (let i = 0; i < 10; i++) {
+    deepUser.metadata.sessionData[i].value = Math.random();
+  }
+  deepPerformanceTime.value = performance.now() - start;
+};
+
+// Shallow reactivity operations
+const addShallowSkill = () => {
+  const start = performance.now();
+  const randomSkill = skills[Math.floor(Math.random() * skills.length)];
+  // For shallow reactivity, we need to replace the entire nested object
+  shallowUser.profile = {
+    ...shallowUser.profile,
+    skills: [...shallowUser.profile.skills, randomSkill],
   };
+  shallowPerformanceTime.value = performance.now() - start;
 };
 
-const updateShallowProperty = () => {
-  // This WON'T trigger reactivity because it's a nested property change
-  shallowUser.value.profile.name = "This won't update!";
+const updateShallowNestedProperty = () => {
+  const start = performance.now();
+  // This WON'T trigger watchers because shallowReactive doesn't track nested changes
+  shallowUser.profile.preferences.notifications.email = !shallowUser.profile.preferences
+    .notifications.email;
+  shallowPerformanceTime.value = performance.now() - start;
+};
+
+const massUpdateShallowObject = () => {
+  const start = performance.now();
+  // These updates won't trigger reactivity because they're nested
+  for (let i = 0; i < 10; i++) {
+    shallowUser.metadata.sessionData[i].value = Math.random();
+  }
+  shallowPerformanceTime.value = performance.now() - start;
+};
+
+const forceShallowUpdate = () => {
+  const start = performance.now();
+  // Force update by replacing the entire object reference
+  shallowUser.metadata = { ...shallowUser.metadata };
+  shallowPerformanceTime.value = performance.now() - start;
 };
 
 // Computed vs Watch demo
@@ -74,16 +122,20 @@ const expensiveComputed = computed(() => {
 });
 
 // Track computed calls with a watcher instead
-watch(expensiveComputed, () => {
-  computedCallCount.value++;
-}, { immediate: true });
+watch(
+  expensiveComputed,
+  () => {
+    computedCallCount.value++;
+  },
+  { immediate: true }
+);
 
-// Watch example (less efficient for this use case)
+// Watch example, less efficient for this use case
 watch(
   watchInput,
   (newValue) => {
     watchCallCount.value++;
-    // Simulate expensive operation
+
     let result = "";
     for (let i = 0; i < 1000; i++) {
       result += newValue.charAt(i % newValue.length);
@@ -93,16 +145,24 @@ watch(
   { immediate: true }
 );
 
-// Track renders
-onUpdated(() => {
-  // This is a simplified way to track renders
-  // In practice, you'd want more sophisticated tracking
-  if (document.activeElement?.closest(".neo-card:first-child")) {
+// Performance tracking watchers
+watch(
+  deepUser,
+  () => {
     deepRenderCount.value++;
-  } else if (document.activeElement?.closest(".neo-card:last-child")) {
+    deepWatchCount.value++;
+  },
+  { deep: true } // This is expensive! Tracks ALL nested properties
+);
+
+watch(
+  shallowUser,
+  () => {
     shallowRenderCount.value++;
+    shallowWatchCount.value++;
   }
-});
+  // No deep option - only tracks top-level changes (much faster!)
+);
 </script>
 
 <template>
@@ -118,80 +178,137 @@ onUpdated(() => {
     <!-- Theory Section -->
     <section class="neo-section bg-neo-pink">
       <h2 class="text-2xl font-bold mb-4 text-neo-white">📚 THEORY</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🔍 Deep Reactivity</h3>
           <p class="text-neo-black mb-3">
-            <code class="bg-neo-yellow px-2 py-1">ref()</code> and
-            <code class="bg-neo-yellow px-2 py-1">reactive()</code>
-            create deep reactivity by default - all nested properties are tracked.
+            <code class="bg-neo-yellow px-2 py-1">reactive()</code> with
+            <code class="bg-neo-yellow px-2 py-1">deep: true</code>
+            tracks ALL nested properties recursively.
           </p>
           <p class="text-sm text-neo-black">
-            ⚠️ Can cause performance overhead with large objects!
+            ⚠️ Performance cost: O(n) where n = all nested properties!
           </p>
         </div>
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🏃 Shallow Reactivity</h3>
           <p class="text-neo-black mb-3">
-            <code class="bg-neo-blue text-neo-white px-2 py-1">shallowRef()</code> and
             <code class="bg-neo-blue text-neo-white px-2 py-1">shallowReactive()</code>
-            only track top-level changes.
+            only tracks top-level property changes.
           </p>
           <p class="text-sm text-neo-black">
-            ✅ Better performance for large data structures!
+            ✅ Performance: O(1) - constant time regardless of nesting!
           </p>
+        </div>
+        <div class="neo-card bg-neo-white">
+          <h3 class="text-xl font-bold text-neo-black mb-3">📊 Real Impact</h3>
+          <p class="text-neo-black mb-3">
+            With 1000+ nested properties, deep reactivity can be
+            <strong>10-100x slower</strong> than shallow.
+          </p>
+          <p class="text-sm text-neo-black">⚡ Test below to see the difference!</p>
         </div>
       </div>
     </section>
 
     <!-- Interactive Demo -->
     <section class="neo-section bg-neo-blue">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🎮 INTERACTIVE DEMO</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-white">🎮 PERFORMANCE COMPARISON</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Deep Reactivity Demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
-            🔍 Deep Reactivity (ref/reactive)
+            🔍 Deep Reactivity (reactive + deep watch)
           </h3>
+          <p class="text-sm text-neo-black mb-4">
+            Large object with 500+ nested properties. Every change triggers watchers!
+          </p>
 
           <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Update User Name:</label
-              >
-              <input
-                v-model="deepUser.profile.name"
-                class="neo-input w-full"
-                placeholder="Enter name..."
-              />
-            </div>
+            <button
+              @click="addDeepSkill"
+              class="neo-button bg-neo-green text-neo-white w-full"
+            >
+              ✅ Add Skill (Triggers Reactivity)
+            </button>
 
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Update User Age:</label
-              >
-              <input
-                v-model.number="deepUser.profile.age"
-                type="number"
-                class="neo-input w-full"
-                placeholder="Enter age..."
-              />
-            </div>
+            <button
+              @click="updateDeepNestedProperty"
+              class="neo-button bg-neo-yellow text-neo-black w-full"
+            >
+              ⚠️ Toggle Deep Notification (Expensive!)
+            </button>
 
-            <button @click="addDeepSkill" class="neo-button bg-neo-green text-neo-white">
-              Add Random Skill
+            <button
+              @click="massUpdateDeepObject"
+              class="neo-button bg-neo-pink text-neo-white w-full"
+            >
+              🐌 Mass Update 10 Properties (Very Slow!)
+            </button>
+
+            <button
+              @click="massUpdateDeepObject"
+              class="neo-button bg-neo-purple text-neo-white w-full"
+            >
+              🔄 Force Update (Always Triggers)
             </button>
 
             <div class="bg-neo-yellow p-4 border-2 border-neo-black">
-              <h4 class="font-bold text-neo-black mb-2">Current Data:</h4>
-              <pre class="text-xs text-neo-black">{{
-                JSON.stringify(deepUser, null, 2)
-              }}</pre>
+              <h4 class="font-bold text-neo-black mb-2">Performance Metrics:</h4>
+              <div class="text-sm text-neo-black space-y-1">
+                <div><strong>Watch Calls:</strong> {{ deepWatchCount }}</div>
+                <div><strong>Render Count:</strong> {{ deepRenderCount }}</div>
+                <div>
+                  <strong>Last Operation Time:</strong>
+                  {{ deepPerformanceTime.toFixed(3) }}ms
+                </div>
+              </div>
             </div>
 
-            <div class="text-sm text-neo-black">
-              <strong>Render Count:</strong> {{ deepRenderCount }}
+            <div
+              class="bg-gradient-to-r from-neo-blue to-neo-purple text-neo-black p-4 border-4 border-neo-black shadow-lg"
+            >
+              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-white">
+                📊 Live Object Status
+              </h4>
+              <div class="grid grid-cols-1 gap-2 text-sm">
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">🎯 Skills:</span>
+                  <span class="bg-neo-yellow text-neo-black px-2 py-1 rounded font-bold">
+                    {{ deepUser.profile.skills.length }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">📡 Session Data:</span>
+                  <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
+                    {{ deepUser.metadata.sessionData.length }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">📧 Email Notifications:</span>
+                  <span
+                    class="px-2 py-1 rounded font-bold"
+                    :class="
+                      deepUser.profile.preferences.notifications.email
+                        ? 'bg-neo-green text-neo-white'
+                        : 'bg-neo-pink text-neo-white'
+                    "
+                  >
+                    {{
+                      deepUser.profile.preferences.notifications.email
+                        ? "🟢 ON"
+                        : "🔴 OFF"
+                    }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -199,60 +316,149 @@ onUpdated(() => {
         <!-- Shallow Reactivity Demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
-            🏃 Shallow Reactivity (shallowRef)
+            🏃 Shallow Reactivity (shallowReactive)
           </h3>
+          <p class="text-sm text-neo-black mb-4">
+            Same large object, but only top-level changes trigger watchers!
+          </p>
 
           <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Replace Entire Object:</label
-              >
-              <button
-                @click="updateShallowUser"
-                class="neo-button bg-neo-purple text-neo-white"
-              >
-                Update Shallow User
-              </button>
-            </div>
+            <button
+              @click="addShallowSkill"
+              class="neo-button bg-neo-green text-neo-white w-full"
+            >
+              ✅ Add Skill (Triggers Reactivity)
+            </button>
 
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Try Direct Property Update (Won't Work):</label
-              >
-              <button
-                @click="updateShallowProperty"
-                class="neo-button bg-neo-pink text-neo-white"
-              >
-                Update Property Directly
-              </button>
-            </div>
+            <button
+              @click="updateShallowNestedProperty"
+              class="neo-button bg-neo-yellow text-neo-black w-full"
+            >
+              ⚡ Toggle Deep Notification (Fast - No Watchers!)
+            </button>
+
+            <button
+              @click="massUpdateShallowObject"
+              class="neo-button bg-neo-pink text-neo-white w-full"
+            >
+              🚀 Mass Update 10 Properties (Fast - No Watchers!)
+            </button>
+
+            <button
+              @click="forceShallowUpdate"
+              class="neo-button bg-neo-purple text-neo-white w-full"
+            >
+              🔄 Force Update (Replace Reference)
+            </button>
 
             <div class="bg-neo-yellow p-4 border-2 border-neo-black">
-              <h4 class="font-bold text-neo-black mb-2">Current Data:</h4>
-              <pre class="text-xs text-neo-black">{{
-                JSON.stringify(shallowUser, null, 2)
-              }}</pre>
+              <h4 class="font-bold text-neo-black mb-2">Performance Metrics:</h4>
+              <div class="text-sm text-neo-black space-y-1">
+                <div><strong>Watch Calls:</strong> {{ shallowWatchCount }}</div>
+                <div><strong>Render Count:</strong> {{ shallowRenderCount }}</div>
+                <div>
+                  <strong>Last Operation Time:</strong>
+                  {{ shallowPerformanceTime.toFixed(3) }}ms
+                </div>
+              </div>
             </div>
 
-            <div class="text-sm text-neo-black">
-              <strong>Render Count:</strong> {{ shallowRenderCount }}
+            <div
+              class="bg-gradient-to-r from-neo-purple to-neo-pink text-neo-black p-4 border-4 border-neo-black shadow-lg"
+            >
+              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-white">
+                ⚡ Live Object Status
+              </h4>
+              <div class="grid grid-cols-1 gap-2 text-sm">
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">🎯 Skills:</span>
+                  <span class="bg-neo-yellow text-neo-black px-2 py-1 rounded font-bold">
+                    {{ shallowUser.profile.skills.length }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">📡 Session Data:</span>
+                  <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
+                    {{ shallowUser.metadata.sessionData.length }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
+                >
+                  <span class="font-bold text-neo-black">📧 Email Notifications:</span>
+                  <span
+                    class="px-2 py-1 rounded font-bold"
+                    :class="
+                      shallowUser.profile.preferences.notifications.email
+                        ? 'bg-neo-green text-neo-white'
+                        : 'bg-neo-pink text-neo-white'
+                    "
+                  >
+                    {{
+                      shallowUser.profile.preferences.notifications.email
+                        ? "🟢 ON"
+                        : "🔴 OFF"
+                    }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Performance Comparison -->
+      <!-- Performance Comparison Chart -->
       <div class="mt-8 neo-card bg-neo-yellow">
-        <h3 class="text-xl font-bold text-neo-black mb-4">📊 Performance Comparison</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="text-center">
-            <div class="text-2xl font-bold text-neo-pink">{{ deepRenderCount }}</div>
-            <div class="text-sm text-neo-black">Deep Reactivity Renders</div>
+        <h3 class="text-xl font-bold text-neo-black mb-4">📊 PERFORMANCE BATTLE</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div>
+            <div class="text-3xl font-bold text-neo-pink">{{ deepWatchCount }}</div>
+            <div class="text-sm text-neo-black">Deep Watch Calls</div>
           </div>
-          <div class="text-center">
-            <div class="text-2xl font-bold text-neo-blue">{{ shallowRenderCount }}</div>
-            <div class="text-sm text-neo-black">Shallow Reactivity Renders</div>
+          <div>
+            <div class="text-3xl font-bold text-neo-blue">{{ shallowWatchCount }}</div>
+            <div class="text-sm text-neo-black">Shallow Watch Calls</div>
           </div>
+          <div>
+            <div class="text-3xl font-bold text-neo-pink">
+              {{ deepPerformanceTime.toFixed(1) }}ms
+            </div>
+            <div class="text-sm text-neo-black">Deep Last Operation</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-neo-blue">
+              {{ shallowPerformanceTime.toFixed(1) }}ms
+            </div>
+            <div class="text-sm text-neo-black">Shallow Last Operation</div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-4 bg-neo-white border-2 border-neo-black">
+          <h4 class="font-bold text-neo-black mb-2">🎯 Key Insight:</h4>
+          <p class="text-sm text-neo-black">
+            Try the "Mass Update" buttons! Deep reactivity will trigger watchers for EVERY
+            nested change, while shallow reactivity won't trigger watchers at all (unless
+            you force update).
+            <br /><br />
+            <strong>Performance Ratio:</strong>
+            <span class="bg-neo-pink text-neo-white px-2 py-1">
+              Deep is
+              {{
+                shallowPerformanceTime > 0
+                  ? Math.max(
+                      1,
+                      Math.round(
+                        deepPerformanceTime / Math.max(shallowPerformanceTime, 0.001)
+                      )
+                    )
+                  : "∞"
+              }}x slower
+            </span>
+          </p>
         </div>
       </div>
     </section>
