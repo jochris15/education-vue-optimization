@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neo-white: #FFFFFF;
+  --color-neo-black: #000000;
+  --color-neo-pink: #FF6B9D;
+  --color-neo-blue: #4ECDC4;
+  --color-neo-yellow: #FFE66D;
+  --color-neo-purple: #A8E6CF;
+  --color-neo-green: #88D8B0;
+  --color-neo-orange: #FF8B94;
+  --color-neo-red: #FFB3BA;
+  --color-neo-gray: #C7CEDB;
+  
+  --shadow-neo: 4px 4px 0px 0px #000000;
+  --shadow-neo-lg: 6px 6px 0px 0px #000000;
+  --shadow-neo-xl: 8px 8px 0px 0px #000000;
+}
+
+@layer base {
+  body {
+    @apply bg-neo-white font-mono;
+  }
+}
+
+@layer components {
+  .neo-button {
+    @apply bg-neo-pink text-neo-white font-bold py-3 px-6 border-4 border-neo-black shadow-neo hover:shadow-neo-lg transition-all duration-150 active:shadow-none active:translate-x-1 active:translate-y-1;
+  }
+  
+  .neo-card {
+    @apply bg-neo-white border-4 border-neo-black shadow-neo-lg p-6;
+  }
+  
+  .neo-input {
+    @apply border-4 border-neo-black px-4 py-2 text-lg font-mono text-neo-black focus:outline-none focus:shadow-neo transition-all;
+  }
+  
+  .neo-checkbox {
+    @apply w-4 h-4 border-2 border-neo-black accent-neo-pink;
+  }
+  
+  .neo-title {
+    @apply text-4xl font-bold text-neo-black border-4 border-neo-black bg-neo-yellow px-4 py-2 shadow-neo-lg;
+  }
+  
+  .neo-section {
+    @apply bg-neo-blue text-neo-white border-4 border-neo-black shadow-neo-xl p-8 mb-8;
+  }
+}
