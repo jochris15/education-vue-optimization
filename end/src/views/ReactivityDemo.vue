@@ -1,53 +1,40 @@
 <script setup>
 import { ref, reactive, shallowReactive, computed, watch } from "vue";
 
-// Create large nested objects to simulate real-world scenarios
-const createLargeObject = (prefix = "Item") => ({
+// Create simple nested objects for easy understanding
+const createSimpleObject = (prefix = "Item") => ({
+  name: `${prefix} User`,
   profile: {
-    name: `${prefix} User`,
     age: 25,
-    skills: Array.from({ length: 100 }, (_, i) => `Skill ${i + 1}`),
     preferences: {
       theme: "dark",
-      language: "en",
       notifications: {
         email: true,
         sms: false,
-        push: true,
-        marketing: Array.from({ length: 50 }, (_, i) => `Pref ${i}`),
       },
     },
   },
-  metadata: {
-    lastLogin: new Date().toISOString(),
-    sessionData: Array.from({ length: 200 }, (_, i) => ({ id: i, value: Math.random() })),
-    cache: Array.from({ length: 100 }, (_, i) => ({
-      key: `cache_${i}`,
-      data: Math.random(),
-    })),
-  },
+  count: 0,
 });
 
 // Deep reactivity example - tracks ALL nested properties
-const deepUser = reactive(createLargeObject("Deep"));
+const deepUser = reactive(createSimpleObject("Deep"));
 const deepRenderCount = ref(0);
 const deepWatchCount = ref(0);
 const deepPerformanceTime = ref(0);
 
 // Shallow reactivity example - only tracks top-level changes
-const shallowUser = shallowReactive(createLargeObject("Shallow"));
+const shallowUser = shallowReactive(createSimpleObject("Shallow"));
 const shallowRenderCount = ref(0);
 const shallowWatchCount = ref(0);
 const shallowPerformanceTime = ref(0);
+// Force update trigger for demonstration
+const forceUpdate = ref(0);
 
-// Skills to add randomly
-const skills = ["Vue.js", "React", "Angular", "Node.js", "Python", "Java", "Go", "Rust"];
-
-// Deep reactivity operations
-const addDeepSkill = () => {
+// Simple operations for demonstration
+const updateDeepName = () => {
   const start = performance.now();
-  const randomSkill = skills[Math.floor(Math.random() * skills.length)];
-  deepUser.profile.skills.push(randomSkill);
+  deepUser.name = `Deep User ${Date.now()}`;
   deepPerformanceTime.value = performance.now() - start;
 };
 
@@ -59,48 +46,41 @@ const updateDeepNestedProperty = () => {
   deepPerformanceTime.value = performance.now() - start;
 };
 
-const massUpdateDeepObject = () => {
+const incrementDeepCount = () => {
   const start = performance.now();
-  // Multiple nested updates - each one triggers reactivity
-  for (let i = 0; i < 10; i++) {
-    deepUser.metadata.sessionData[i].value = Math.random();
-  }
+  deepUser.count++;
   deepPerformanceTime.value = performance.now() - start;
 };
 
 // Shallow reactivity operations
-const addShallowSkill = () => {
+const updateShallowName = () => {
   const start = performance.now();
-  const randomSkill = skills[Math.floor(Math.random() * skills.length)];
-  // For shallow reactivity, we need to replace the entire nested object
-  shallowUser.profile = {
-    ...shallowUser.profile,
-    skills: [...shallowUser.profile.skills, randomSkill],
-  };
+  shallowUser.name = `Shallow User ${Date.now()}`;
   shallowPerformanceTime.value = performance.now() - start;
 };
 
 const updateShallowNestedProperty = () => {
   const start = performance.now();
   // This WON'T trigger watchers because shallowReactive doesn't track nested changes
+  // The value changes but UI won't update!
   shallowUser.profile.preferences.notifications.email = !shallowUser.profile.preferences
     .notifications.email;
+
+  // Force a UI update to show the change (for demonstration)
+  forceUpdate.value++;
   shallowPerformanceTime.value = performance.now() - start;
 };
 
-const massUpdateShallowObject = () => {
+const incrementShallowCount = () => {
   const start = performance.now();
-  // These updates won't trigger reactivity because they're nested
-  for (let i = 0; i < 10; i++) {
-    shallowUser.metadata.sessionData[i].value = Math.random();
-  }
+  shallowUser.count++;
   shallowPerformanceTime.value = performance.now() - start;
 };
 
 const forceShallowUpdate = () => {
   const start = performance.now();
-  // Force update by replacing the entire object reference
-  shallowUser.metadata = { ...shallowUser.metadata };
+  // Force update by replacing the entire nested object reference
+  shallowUser.profile = { ...shallowUser.profile };
   shallowPerformanceTime.value = performance.now() - start;
 };
 
@@ -171,7 +151,7 @@ watch(
     <section class="text-center">
       <h1 class="neo-title inline-block mb-4">⚡ REACTIVITY OPTIMIZATION</h1>
       <p class="text-xl text-neo-black max-w-3xl mx-auto">
-        Compare deep vs shallow reactivity and see the performance difference!
+        Compare deep vs shallow reactivity with simple examples!
       </p>
     </section>
 
@@ -186,9 +166,7 @@ watch(
             <code class="bg-neo-yellow px-2 py-1">deep: true</code>
             tracks ALL nested properties recursively.
           </p>
-          <p class="text-sm text-neo-black">
-            ⚠️ Performance cost: O(n) where n = all nested properties!
-          </p>
+          <p class="text-sm text-neo-black">⚠️ Every nested change triggers watchers!</p>
         </div>
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🏃 Shallow Reactivity</h3>
@@ -196,17 +174,21 @@ watch(
             <code class="bg-neo-blue text-neo-white px-2 py-1">shallowReactive()</code>
             only tracks top-level property changes.
           </p>
-          <p class="text-sm text-neo-black">
-            ✅ Performance: O(1) - constant time regardless of nesting!
-          </p>
+          <p class="text-sm text-neo-black">✅ Nested changes don't trigger watchers!</p>
         </div>
         <div class="neo-card bg-neo-white">
-          <h3 class="text-xl font-bold text-neo-black mb-3">📊 Real Impact</h3>
+          <h3 class="text-xl font-bold text-neo-black mb-3">📊 Simple Example</h3>
           <p class="text-neo-black mb-3">
-            With 1000+ nested properties, deep reactivity can be
-            <strong>10-100x slower</strong> than shallow.
+            We'll use a simple object with just a few properties:
+            <code class="bg-neo-blue text-neo-white px-2 py-1">name</code>,
+            <code class="bg-neo-blue text-neo-white px-2 py-1">count</code>, and nested
+            <code class="bg-neo-blue text-neo-white px-2 py-1"
+              >profile.preferences.notifications.email</code
+            >
           </p>
-          <p class="text-sm text-neo-black">⚡ Test below to see the difference!</p>
+          <p class="text-sm text-neo-black">
+            ✅ Easy to understand the difference in behavior!
+          </p>
         </div>
       </div>
     </section>
@@ -222,36 +204,29 @@ watch(
             🔍 Deep Reactivity (reactive + deep watch)
           </h3>
           <p class="text-sm text-neo-black mb-4">
-            Large object with 500+ nested properties. Every change triggers watchers!
+            Simple object with nested properties. Every nested change triggers watchers!
           </p>
 
           <div class="space-y-4">
             <button
-              @click="addDeepSkill"
+              @click="updateDeepName"
               class="neo-button bg-neo-green text-neo-white w-full"
             >
-              ✅ Add Skill (Triggers Reactivity)
+              ✅ Update Name (Top Level)
+            </button>
+
+            <button
+              @click="incrementDeepCount"
+              class="neo-button bg-neo-blue text-neo-white w-full"
+            >
+              🔢 Increment Count (Top Level)
             </button>
 
             <button
               @click="updateDeepNestedProperty"
               class="neo-button bg-neo-yellow text-neo-black w-full"
             >
-              ⚠️ Toggle Deep Notification (Expensive!)
-            </button>
-
-            <button
-              @click="massUpdateDeepObject"
-              class="neo-button bg-neo-pink text-neo-white w-full"
-            >
-              🐌 Mass Update 10 Properties (Very Slow!)
-            </button>
-
-            <button
-              @click="massUpdateDeepObject"
-              class="neo-button bg-neo-purple text-neo-white w-full"
-            >
-              🔄 Force Update (Always Triggers)
+              ⚠️ Toggle Email Notification (Nested Property)
             </button>
 
             <div class="bg-neo-yellow p-4 border-2 border-neo-black">
@@ -276,17 +251,17 @@ watch(
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">🎯 Skills:</span>
+                  <span class="font-bold text-neo-black">👤 Name:</span>
                   <span class="bg-neo-yellow text-neo-black px-2 py-1 rounded font-bold">
-                    {{ deepUser.profile.skills.length }}
+                    {{ deepUser.name }}
                   </span>
                 </div>
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">📡 Session Data:</span>
+                  <span class="font-bold text-neo-black">🔢 Count:</span>
                   <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
-                    {{ deepUser.metadata.sessionData.length }}
+                    {{ deepUser.count }}
                   </span>
                 </div>
                 <div
@@ -319,29 +294,29 @@ watch(
             🏃 Shallow Reactivity (shallowReactive)
           </h3>
           <p class="text-sm text-neo-black mb-4">
-            Same large object, but only top-level changes trigger watchers!
+            Same simple object, but only top-level changes trigger watchers!
           </p>
 
           <div class="space-y-4">
             <button
-              @click="addShallowSkill"
+              @click="updateShallowName"
               class="neo-button bg-neo-green text-neo-white w-full"
             >
-              ✅ Add Skill (Triggers Reactivity)
+              ✅ Update Name (Top Level - Triggers Watcher)
+            </button>
+
+            <button
+              @click="incrementShallowCount"
+              class="neo-button bg-neo-blue text-neo-white w-full"
+            >
+              🔢 Increment Count (Top Level - Triggers Watcher)
             </button>
 
             <button
               @click="updateShallowNestedProperty"
               class="neo-button bg-neo-yellow text-neo-black w-full"
             >
-              ⚡ Toggle Deep Notification (Fast - No Watchers!)
-            </button>
-
-            <button
-              @click="massUpdateShallowObject"
-              class="neo-button bg-neo-pink text-neo-white w-full"
-            >
-              🚀 Mass Update 10 Properties (Fast - No Watchers!)
+              ⚡ Toggle Email Notification (Nested - Needs Force Update!)
             </button>
 
             <button
@@ -373,17 +348,17 @@ watch(
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">🎯 Skills:</span>
+                  <span class="font-bold text-neo-black">👤 Name:</span>
                   <span class="bg-neo-yellow text-neo-black px-2 py-1 rounded font-bold">
-                    {{ shallowUser.profile.skills.length }}
+                    {{ shallowUser.name }}
                   </span>
                 </div>
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">📡 Session Data:</span>
+                  <span class="font-bold text-neo-black">🔢 Count:</span>
                   <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
-                    {{ shallowUser.metadata.sessionData.length }}
+                    {{ shallowUser.count }}
                   </span>
                 </div>
                 <div
@@ -403,6 +378,7 @@ watch(
                         ? "🟢 ON"
                         : "🔴 OFF"
                     }}
+                    ({{ forceUpdate }})
                   </span>
                 </div>
               </div>
@@ -440,24 +416,21 @@ watch(
         <div class="mt-4 p-4 bg-neo-white border-2 border-neo-black">
           <h4 class="font-bold text-neo-black mb-2">🎯 Key Insight:</h4>
           <p class="text-sm text-neo-black">
-            Try the "Mass Update" buttons! Deep reactivity will trigger watchers for EVERY
-            nested change, while shallow reactivity won't trigger watchers at all (unless
-            you force update).
+            Try clicking the buttons and watch the "Watch Calls" count!
             <br /><br />
-            <strong>Performance Ratio:</strong>
-            <span class="bg-neo-pink text-neo-white px-2 py-1">
-              Deep is
-              {{
-                shallowPerformanceTime > 0
-                  ? Math.max(
-                      1,
-                      Math.round(
-                        deepPerformanceTime / Math.max(shallowPerformanceTime, 0.001)
-                      )
-                    )
-                  : "∞"
-              }}x slower
-            </span>
+            <strong>Deep Reactivity:</strong> ALL changes (even nested ones) trigger
+            watchers.
+            <br />
+            <strong>Shallow Reactivity:</strong> Only top-level changes trigger watchers.
+            <br /><br />
+            <strong>Notice:</strong> When you toggle email notifications:
+            <br />
+            - Deep: Watch count increases ✅ and UI updates automatically
+            <br />
+            - Shallow: Watch count stays the same ❌ and we need to force update the UI!
+            <br /><br />
+            <strong>The number in parentheses</strong> next to the shallow email status
+            shows how many times we've forced the UI to update.
           </p>
         </div>
       </div>

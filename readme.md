@@ -24,7 +24,7 @@ Reactivity adalah fitur dimana Vue melacak perubahan data dan memperbarui DOM se
 
 `shallowRef` dan `shallowReactive` hanya membuat top-level reactivity, alias tidak hanya melakukan perubahan (reaktif) pada tingkat paling atas. Hal ini tentu meningkatkan performa karena menghindari deep reactivity.
 
-<img src="./asset/shallow.png"/>
+<img src="./assets/reactivity.png"/>
 
 ### Debounce & Throttle
 Dalam Vue apps, event seperti input, scroll, atau resize dapat memicu terlalu banyak update atau API call. 
@@ -33,7 +33,7 @@ Maka, Gunakan `debounce` atau `throttle` untuk membatasi frekuensi eksekusi fung
 - **Debounce** : Menunda eksekusi fungsi sampai tidak ada event lagi selama X ms (delay)
 - **Throttle** : Menjalankan fungsi maksimal sekali tiap X ms, walaupun event terus terjadi
 
-<img src="./asset/debounce.png"/>
+<img src="./assets/debounce.png"/>
 
 ### Reduce Component Re-render
 Untuk menghindari komponen yang sering di-render ulang:
