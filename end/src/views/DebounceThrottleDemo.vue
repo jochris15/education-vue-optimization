@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { debounce, throttle } from "lodash-es";
 
-// Search demo
+// search demo
 const normalSearch = ref("");
 const debouncedSearch = ref("");
 const throttledSearch = ref("");
@@ -15,7 +15,7 @@ const normalSearchTime = ref("");
 const debouncedSearchTime = ref("");
 const throttledSearchTime = ref("");
 
-// Search handlers
+// handlers only for counting the calls via input events
 const handleNormalSearch = () => {
   normalSearchCount.value++;
   normalSearchTime.value = new Date().toLocaleTimeString();
@@ -24,36 +24,39 @@ const handleNormalSearch = () => {
 const handleDebouncedSearch = debounce(() => {
   debouncedSearchCount.value++;
   debouncedSearchTime.value = new Date().toLocaleTimeString();
-}, 500);
+}, 500); // wait 500ms after the user stops typing to call the API
 
 const handleThrottledSearch = throttle(() => {
   throttledSearchCount.value++;
   throttledSearchTime.value = new Date().toLocaleTimeString();
-}, 1000);
+}, 1000); // max 1 call per second, even if the user keeps typing
 
-// Scroll demo
+
+// scroll demo
 const normalScrollCount = ref(0);
 const throttledScrollCount = ref(0);
 
+// handlers only for counting the scroll events
 const handleNormalScroll = () => {
   normalScrollCount.value++;
 };
 
 const handleThrottledScroll = throttle(() => {
   throttledScrollCount.value++;
-}, 100);
+}, 1000); // max 1 call per second, even if the user keeps scrolling
 
-// Click demo
+// click demo
 const normalClickCount = ref(0);
-const debouncedClickCount = ref(0);
+const throttleClickCount = ref(0);
 
+// handlers only for counting the clicks
 const handleNormalClick = () => {
   normalClickCount.value++;
 };
 
-const handleDebouncedClick = debounce(() => {
-  debouncedClickCount.value++;
-}, 300);
+const handleThrottleClick = throttle(() => {
+  throttleClickCount.value++;
+}, 1000); // max 1 call per second, even if the user keeps clicking
 </script>
 
 <template>
@@ -68,11 +71,11 @@ const handleDebouncedClick = debounce(() => {
 
     <!-- Theory Section -->
     <section class="neo-section bg-neo-blue">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">
         📚 UNDERSTANDING THE DIFFERENCE
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-neo-black">
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">🕐 DEBOUNCE</h3>
           <p class="text-neo-black mb-4">
@@ -92,7 +95,7 @@ const handleDebouncedClick = debounce(() => {
             Limits function execution to once every X milliseconds, even if events keep
             coming.
           </p>
-          <div class="bg-neo-pink text-neo-white p-3 border-2 border-neo-black mb-4">
+          <div class="bg-neo-pink text-neo-black p-3 border-2 border-neo-black mb-4">
             <strong>Use Case:</strong> Scroll events, resize events, button clicks
           </div>
           <div class="text-sm text-neo-black">
@@ -102,12 +105,12 @@ const handleDebouncedClick = debounce(() => {
       </div>
     </section>
 
-    <!-- Search Demo -->
+    <!-- search demo -->
     <section class="neo-section bg-neo-pink">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🔍 SEARCH INPUT DEMO</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">🔍 SEARCH INPUT DEMO</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- No Optimization -->
+        <!-- no optimization -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">❌ No Optimization</h3>
           <input
@@ -116,7 +119,7 @@ const handleDebouncedClick = debounce(() => {
             class="neo-input w-full mb-4"
             placeholder="Search without optimization..."
           />
-          <div class="bg-neo-pink text-neo-white p-3 border-2 border-neo-black mb-4">
+          <div class="bg-neo-pink text-neo-black p-3 border-2 border-neo-black mb-4">
             <div class="text-sm">API Calls: {{ normalSearchCount }}</div>
             <div class="text-xs">Last call: {{ normalSearchTime }}</div>
           </div>
@@ -125,7 +128,7 @@ const handleDebouncedClick = debounce(() => {
           </div>
         </div>
 
-        <!-- Debounced -->
+        <!-- debounced -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">✅ Debounced (500ms)</h3>
           <input
@@ -134,7 +137,7 @@ const handleDebouncedClick = debounce(() => {
             class="neo-input w-full mb-4"
             placeholder="Search with debounce..."
           />
-          <div class="bg-neo-green text-neo-white p-3 border-2 border-neo-black mb-4">
+          <div class="bg-neo-green text-neo-black p-3 border-2 border-neo-black mb-4">
             <div class="text-sm">API Calls: {{ debouncedSearchCount }}</div>
             <div class="text-xs">Last call: {{ debouncedSearchTime }}</div>
           </div>
@@ -150,7 +153,7 @@ const handleDebouncedClick = debounce(() => {
             class="neo-input w-full mb-4"
             placeholder="Search with throttle..."
           />
-          <div class="bg-neo-blue text-neo-white p-3 border-2 border-neo-black mb-4">
+          <div class="bg-neo-blue text-neo-black p-3 border-2 border-neo-black mb-4">
             <div class="text-sm">API Calls: {{ throttledSearchCount }}</div>
             <div class="text-xs">Last call: {{ throttledSearchTime }}</div>
           </div>
@@ -171,7 +174,7 @@ const handleDebouncedClick = debounce(() => {
             @scroll="handleNormalScroll"
             class="h-64 overflow-y-auto border-4 border-neo-black p-4 bg-neo-yellow"
           >
-            <div v-for="n in 50" :key="n" class="py-2 border-b border-neo-black">
+            <div v-for="n in 50" :key="n" class="py-2 border-b border-neo-black text-neo-black">
               Item {{ n }} - Scroll to see the effect!
             </div>
           </div>
@@ -188,9 +191,10 @@ const handleDebouncedClick = debounce(() => {
           </h3>
           <div
             @scroll="handleThrottledScroll"
-            class="h-64 overflow-y-auto border-4 border-neo-black p-4 bg-neo-blue text-neo-white"
+            class="h-64 overflow-y-auto border-4 border-neo-black p-4 bg-neo-blue text-neo-black"
           >
-            <div v-for="n in 50" :key="n" class="py-2 border-b border-neo-white">
+            <div v-for="n in 50" :key="n" class="py-2 border-b border-neo-black
+            text-neo-black">
               Item {{ n }} - Much more efficient scrolling!
             </div>
           </div>
@@ -204,7 +208,7 @@ const handleDebouncedClick = debounce(() => {
 
     <!-- Button Click Demo -->
     <section class="neo-section bg-neo-purple">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🖱️ BUTTON CLICK DEMO</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">🖱️ BUTTON CLICK DEMO</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Normal Button -->
@@ -212,7 +216,7 @@ const handleDebouncedClick = debounce(() => {
           <h3 class="text-lg font-bold text-neo-black mb-4">❌ Normal Button</h3>
           <button
             @click="handleNormalClick"
-            class="neo-button bg-neo-pink text-neo-white mb-4"
+            class="neo-button bg-neo-pink text-neo-black mb-4"
           >
             CLICK ME RAPIDLY!
           </button>
@@ -223,19 +227,19 @@ const handleDebouncedClick = debounce(() => {
           </div>
         </div>
 
-        <!-- Debounced Button -->
+        <!-- Throttle Button -->
         <div class="neo-card bg-neo-white text-center">
-          <h3 class="text-lg font-bold text-neo-black mb-4">✅ Debounced Button</h3>
+          <h3 class="text-lg font-bold text-neo-black mb-4">✅ Throttle Button</h3>
           <button
-            @click="handleDebouncedClick"
-            class="neo-button bg-neo-green text-neo-white mb-4"
+            @click="handleThrottleClick"
+            class="neo-button bg-neo-green text-neo-black mb-4"
           >
             CLICK ME RAPIDLY!
           </button>
-          <div class="text-2xl font-bold text-neo-green">{{ debouncedClickCount }}</div>
+          <div class="text-2xl font-bold text-neo-green">{{ throttleClickCount }}</div>
           <div class="text-sm text-neo-black">Clicks Processed</div>
           <div class="text-xs text-neo-black mt-2">
-            ⏱️ Only processes after 300ms of no clicks
+            ⏱️ Maximum 1 click processed every second
           </div>
         </div>
       </div>
@@ -253,7 +257,7 @@ const handleDebouncedClick = debounce(() => {
         </div>
         <div class="neo-card bg-neo-white text-center">
           <div class="text-xl font-bold text-neo-green">
-            {{ debouncedSearchCount + debouncedClickCount }}
+            {{ debouncedSearchCount + throttleClickCount }}
           </div>
           <div class="text-sm text-neo-black">Total Debounced Events</div>
         </div>
@@ -268,7 +272,7 @@ const handleDebouncedClick = debounce(() => {
             {{
               Math.round(
                 ((debouncedSearchCount +
-                  debouncedClickCount +
+                  throttleClickCount +
                   throttledSearchCount +
                   throttledScrollCount) /
                   (normalSearchCount + normalScrollCount + normalClickCount || 1)) *

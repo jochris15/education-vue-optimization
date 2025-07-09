@@ -180,7 +180,7 @@ const addExpensiveItemDemo = () => {
 
     <!-- Theory Section -->
     <section class="neo-section bg-neo-pink">
-      <h2 class="text-2xl font-bold mb-4 text-neo-white">📚 THEORY</h2>
+      <h2 class="text-2xl font-bold mb-4 text-neo-black">📚 THEORY</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🔍 Deep Reactivity</h3>
@@ -195,7 +195,7 @@ const addExpensiveItemDemo = () => {
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🏃 Shallow Reactivity</h3>
           <p class="text-neo-black mb-3">
-            <code class="bg-neo-blue text-neo-white px-2 py-1">shallowReactive()</code>
+            <code class="bg-neo-blue text-neo-black px-2 py-1">shallowReactive()</code>
             only tracks top-level property changes.
           </p>
           <p class="text-sm text-neo-black">
@@ -207,7 +207,7 @@ const addExpensiveItemDemo = () => {
 
     <!-- Interactive Demo -->
     <section class="neo-section bg-neo-blue">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🎮 EXAMPLES</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">🎮 EXAMPLES</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Deep Reactivity Demo -->
@@ -222,14 +222,14 @@ const addExpensiveItemDemo = () => {
           <div class="space-y-4">
             <button
               @click="updateDeepName"
-              class="neo-button bg-neo-green text-neo-white w-full"
+              class="neo-button bg-neo-green text-neo-black w-full"
             >
               ✅ Update Name (Top Level)
             </button>
 
             <button
               @click="incrementDeepCount"
-              class="neo-button bg-neo-blue text-neo-white w-full"
+              class="neo-button bg-neo-blue text-neo-black w-full"
             >
               🔢 Increment Count (Top Level)
             </button>
@@ -251,7 +251,7 @@ const addExpensiveItemDemo = () => {
             <div
               class="bg-gradient-to-r from-neo-blue to-neo-purple text-neo-black p-4 border-4 border-neo-black shadow-lg"
             >
-              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-white">
+              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-black">
                 📊 Live Object Status
               </h4>
               <div class="grid grid-cols-1 gap-2 text-sm">
@@ -267,7 +267,7 @@ const addExpensiveItemDemo = () => {
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
                   <span class="font-bold text-neo-black">🔢 Count:</span>
-                  <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
+                  <span class="bg-neo-green text-neo-black px-2 py-1 rounded font-bold">
                     {{ deepUser.count }}
                   </span>
                 </div>
@@ -279,8 +279,8 @@ const addExpensiveItemDemo = () => {
                     class="px-2 py-1 rounded font-bold"
                     :class="
                       deepUser.settings.darkMode
-                        ? 'bg-neo-green text-neo-white'
-                        : 'bg-neo-pink text-neo-white'
+                        ? 'bg-neo-green text-neo-black'
+                        : 'bg-neo-pink text-neo-black'
                     "
                   >
                     {{ deepUser.settings.darkMode ? "🌙 ON" : "☀️ OFF" }}
@@ -303,14 +303,14 @@ const addExpensiveItemDemo = () => {
           <div class="space-y-4">
             <button
               @click="updateShallowName"
-              class="neo-button bg-neo-green text-neo-white w-full"
+              class="neo-button bg-neo-green text-neo-black w-full"
             >
               ✅ Update Name (Top Level - Works)
             </button>
 
             <button
               @click="incrementShallowCount"
-              class="neo-button bg-neo-blue text-neo-white w-full"
+              class="neo-button bg-neo-blue text-neo-black w-full"
             >
               🔢 Increment Count (Top Level - Works)
             </button>
@@ -324,7 +324,7 @@ const addExpensiveItemDemo = () => {
 
             <button
               @click="forceShallowUpdate"
-              class="neo-button bg-neo-purple text-neo-white w-full"
+              class="neo-button bg-neo-purple text-neo-black w-full"
             >
               🔄 Force Update (Replace Reference)
             </button>
@@ -340,7 +340,7 @@ const addExpensiveItemDemo = () => {
             <div
               class="bg-gradient-to-r from-neo-purple to-neo-pink text-neo-black p-4 border-4 border-neo-black shadow-lg"
             >
-              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-white">
+              <h4 class="font-bold mb-3 text-lg flex items-center text-neo-black">
                 ⚡ Live Object Status
               </h4>
               <div class="grid grid-cols-1 gap-2 text-sm">
@@ -356,7 +356,7 @@ const addExpensiveItemDemo = () => {
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
                   <span class="font-bold text-neo-black">🔢 Count:</span>
-                  <span class="bg-neo-green text-neo-white px-2 py-1 rounded font-bold">
+                  <span class="bg-neo-green text-neo-black px-2 py-1 rounded font-bold">
                     {{ shallowUser.count }}
                   </span>
                 </div>
@@ -368,8 +368,8 @@ const addExpensiveItemDemo = () => {
                     class="px-2 py-1 rounded font-bold"
                     :class="
                       shallowUser.settings.darkMode
-                        ? 'bg-neo-green text-neo-white'
-                        : 'bg-neo-pink text-neo-white'
+                        ? 'bg-neo-green text-neo-black'
+                        : 'bg-neo-pink text-neo-black'
                     "
                   >
                     {{ shallowUser.settings.darkMode ? "🌙 ON" : "☀️ OFF" }}
@@ -424,7 +424,7 @@ const addExpensiveItemDemo = () => {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             @click="updateNameDemo"
-            class="neo-button bg-neo-purple text-neo-white w-full"
+            class="neo-button bg-neo-purple text-neo-black w-full"
           >
             Update Name
           </button>
@@ -438,7 +438,7 @@ const addExpensiveItemDemo = () => {
           
           <button
             @click="addExpensiveItemDemo"
-            class="neo-button bg-neo-pink text-neo-white w-full"
+            class="neo-button bg-neo-pink text-neo-black w-full"
           >
             Add Expensive Item
           </button>
@@ -454,7 +454,7 @@ const addExpensiveItemDemo = () => {
           </p>
 
           <div class="space-y-4">
-            <div class="bg-neo-blue p-4 text-neo-white">
+            <div class="bg-neo-blue p-4 text-neo-black">
               <h4 class="font-bold mb-2">Example 1: Name Formatting</h4>
               <div class="flex flex-col gap-2 mb-4">
                 <div class="flex gap-2">
@@ -463,7 +463,7 @@ const addExpensiveItemDemo = () => {
                 </div>
                 <div>
                   <strong>Full Name (Computed):</strong> {{ fullName }}
-                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-white rounded-full text-xs">
+                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-black rounded-full text-xs">
                     Recalculations: {{ computedExecutionCount }}
                   </div>
                 </div>
@@ -502,24 +502,24 @@ const addExpensiveItemDemo = () => {
           </p>
 
           <div class="space-y-4">
-            <div class="bg-neo-blue p-4 text-neo-white">
+            <div class="bg-neo-blue p-4 text-neo-black">
               <h4 class="font-bold mb-2">Example 1: Shopping Cart with Shipping</h4>
               <div class="flex flex-col gap-2 mb-4">
                 <div><strong>Cart Total:</strong> ${{ cartTotal }}</div>
                 <div>
                   <strong>Shipping Status:</strong> 
                   <div class="px-3 py-1 mt-1 inline-block rounded" 
-                      :class="cartTotal >= 100 ? 'bg-neo-green text-neo-white' : 'bg-neo-yellow text-neo-black'">
+                      :class="cartTotal >= 100 ? 'bg-neo-green text-neo-black' : 'bg-neo-yellow text-neo-black'">
                     {{ shippingMessage }}
                   </div>
-                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-white rounded-full text-xs">
+                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-black rounded-full text-xs">
                     Watcher runs: {{ watchExecutionCount }}
                   </div>
                 </div>
               </div>
               
               <h4 class="font-bold mb-2">Example 2: User Activity Log</h4>
-              <div class="max-h-20 overflow-y-auto p-2 bg-neo-black bg-opacity-50 rounded">
+              <div class="max-h-20 overflow-y-auto p-2 bg-neo-white bg-opacity-50 rounded">
                 <div v-for="(log, index) in userActivityLog" :key="index" class="text-sm">
                   {{ log }}
                 </div>
