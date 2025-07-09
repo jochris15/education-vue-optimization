@@ -1,172 +1,196 @@
 <script setup>
-import { ref, reactive, shallowReactive, computed, watch } from "vue";
+import { ref, reactive, shallowReactive, watch, computed } from "vue";
 
-// Create simple nested objects for easy understanding
+// reusable nested object
 const createSimpleObject = (prefix = "Item") => ({
   name: `${prefix} User`,
-  profile: {
-    age: 25,
-    preferences: {
-      theme: "dark",
-      notifications: {
-        email: true,
-        sms: false,
-      },
-    },
+  settings: {
+    darkMode: true,
+    notifications: true,
   },
   count: 0,
 });
 
-// Deep reactivity example - tracks ALL nested properties
+// deep reactivity example - tracks all nested changes
 const deepUser = reactive(createSimpleObject("Deep"));
-const deepRenderCount = ref(0);
-const deepWatchCount = ref(0);
-const deepPerformanceTime = ref(0);
+const deepChangeMessage = ref("No changes yet");
 
-// Shallow reactivity example - only tracks top-level changes
+// shallow reactivity example - only tracks top-level changes
 const shallowUser = shallowReactive(createSimpleObject("Shallow"));
-const shallowRenderCount = ref(0);
-const shallowWatchCount = ref(0);
-const shallowPerformanceTime = ref(0);
-// Force update trigger for demonstration
+const shallowChangeMessage = ref("No changes yet");
+
+// force update trigger only for demo
 const forceUpdate = ref(0);
 
-// Simple operations for demonstration
+// simple operations only for demo
 const updateDeepName = () => {
-  const start = performance.now();
-  deepUser.name = `Deep User ${Date.now()}`;
-  deepPerformanceTime.value = performance.now() - start;
+  deepUser.name = `Deep User ${Date.now().toString().slice(-4)}`;
+  deepChangeMessage.value = "Top-level property updated";
 };
 
 const updateDeepNestedProperty = () => {
-  const start = performance.now();
-  // This will trigger deep watchers because reactive() tracks nested changes
-  deepUser.profile.preferences.notifications.email = !deepUser.profile.preferences
-    .notifications.email;
-  deepPerformanceTime.value = performance.now() - start;
+  // this will trigger watchers because reactive() tracks nested changes
+  deepUser.settings.darkMode = !deepUser.settings.darkMode;
+  deepChangeMessage.value = "Nested property updated - UI updates automatically";
 };
 
 const incrementDeepCount = () => {
-  const start = performance.now();
   deepUser.count++;
-  deepPerformanceTime.value = performance.now() - start;
+  deepChangeMessage.value = "Count incremented";
 };
 
-// Shallow reactivity operations
+// shallow reactivity operations
 const updateShallowName = () => {
-  const start = performance.now();
-  shallowUser.name = `Shallow User ${Date.now()}`;
-  shallowPerformanceTime.value = performance.now() - start;
+  shallowUser.name = `Shallow User ${Date.now().toString().slice(-4)}`;
+  shallowChangeMessage.value = "Top-level property updated - UI updates automatically";
 };
 
 const updateShallowNestedProperty = () => {
-  const start = performance.now();
-  // This WON'T trigger watchers because shallowReactive doesn't track nested changes
-  // The value changes but UI won't update!
-  shallowUser.profile.preferences.notifications.email = !shallowUser.profile.preferences
-    .notifications.email;
-
-  // Force a UI update to show the change (for demonstration)
-  forceUpdate.value++;
-  shallowPerformanceTime.value = performance.now() - start;
+  // this wont trigger reactivity because shallowReactive doesnt track nested changes
+  shallowUser.settings.darkMode = !shallowUser.settings.darkMode;
+  shallowChangeMessage.value = "Nested property updated - UI will NOT update!";
 };
 
 const incrementShallowCount = () => {
-  const start = performance.now();
   shallowUser.count++;
-  shallowPerformanceTime.value = performance.now() - start;
+  shallowChangeMessage.value =
+    "Count incremented - Top-level property changes are reactive";
 };
 
 const forceShallowUpdate = () => {
-  const start = performance.now();
-  // Force update by replacing the entire nested object reference
-  shallowUser.profile = { ...shallowUser.profile };
-  shallowPerformanceTime.value = performance.now() - start;
+  // force update by replacing the entire nested object reference
+  shallowUser.settings = { ...shallowUser.settings };
+  shallowChangeMessage.value = "Forced update by replacing entire object reference";
+  forceUpdate.value++;
 };
 
-// Computed vs Watch demo
-const computedInput = ref("");
-const watchInput = ref("");
-const watchResult = ref("");
-const computedCallCount = ref(0);
-const watchCallCount = ref(0);
-
-// Expensive computation simulation
-const expensiveComputed = computed(() => {
-  // Simulate expensive operation
-  let result = "";
-  for (let i = 0; i < 1000; i++) {
-    result += computedInput.value.charAt(i % computedInput.value.length);
-  }
-  return `Processed: ${computedInput.value} (${result.length} chars)`;
-});
-
-// Track computed calls with a watcher instead
-watch(
-  expensiveComputed,
-  () => {
-    computedCallCount.value++;
-  },
-  { immediate: true }
-);
-
-// Watch example, less efficient for this use case
-watch(
-  watchInput,
-  (newValue) => {
-    watchCallCount.value++;
-
-    let result = "";
-    for (let i = 0; i < 1000; i++) {
-      result += newValue.charAt(i % newValue.length);
-    }
-    watchResult.value = `Processed: ${newValue} (${result.length} chars)`;
-  },
-  { immediate: true }
-);
-
-// Performance tracking watchers
+// watcher only for demo
 watch(
   deepUser,
   () => {
-    deepRenderCount.value++;
-    deepWatchCount.value++;
+    console.log("Deep reactive object changed!");
   },
-  { deep: true } // This is expensive! Tracks ALL nested properties
+  { deep: true } // Deep watch tracks ALL nested changes
 );
 
 watch(
   shallowUser,
   () => {
-    shallowRenderCount.value++;
-    shallowWatchCount.value++;
+    console.log("Shallow reactive object changed!");
   }
-  // No deep option - only tracks top-level changes (much faster!)
+  // no deep option - only tracks top-level changes
 );
+
+//-----------------------------------------------------------------------------//
+// Computed vs Watchers 
+const firstName = ref("John");
+const lastName = ref("Doe");
+const price = ref(10);
+const quantity = ref(1);
+
+// tracking counts for visualization
+const computedExecutionCount = ref(0);
+const watchExecutionCount = ref(0);
+
+// computed example - name formatting
+const fullName = computed(() => {
+  console.log("Computing fullName...");
+  // return the computed value without side effects
+  return `${firstName.value} ${lastName.value}`;
+});
+
+// track when computed property is recalculated
+watch(fullName, () => {
+  computedExecutionCount.value++;
+});
+
+// computed example - total price calculation
+const totalPrice = computed(() => {
+  console.log("Computing total price...");
+  // This will only recalculate when price or quantity changes AND when the value is used
+  return price.value * quantity.value;
+});
+
+// watcher example - shopping cart 
+const cartTotal = ref(price.value * quantity.value);
+const shippingMessage = ref("");
+
+// watcher example - watch cart changes to show shipping message
+watch([price, quantity], ([newPrice, newQuantity]) => {
+  console.log("Watching cart changes...");
+  watchExecutionCount.value++;
+  
+  // update the cart total
+  cartTotal.value = newPrice * newQuantity;
+  
+  if (cartTotal.value >= 100) {
+    shippingMessage.value = "Free shipping!";
+  } else {
+    const remaining = 100 - cartTotal.value;
+    shippingMessage.value = `Add $${remaining} more for free shipping`;
+  }
+});
+
+// watchers example - log user activity
+const userActivityLog = ref([]);
+watch(fullName, (newName) => {
+  console.log("User name changed to:", newName);
+  userActivityLog.value.push(`Name changed to ${newName} at ${new Date().toLocaleTimeString()}`);
+});
+
+// demo control functions
+const resetDemoData = () => {
+  firstName.value = "John";
+  lastName.value = "Doe";
+  price.value = 10;
+  quantity.value = 1;
+  computedExecutionCount.value = 0;
+  watchExecutionCount.value = 0;
+  userActivityLog.value = [];
+  shippingMessage.value = "";
+};
+
+const updateNameDemo = () => {
+  resetDemoData();
+  firstName.value = `John${Date.now().toString().slice(-4)}`;
+};
+
+const updateCartDemo = () => {
+  resetDemoData();
+  price.value += 5;
+  quantity.value += 1;
+};
+
+const addExpensiveItemDemo = () => {
+  resetDemoData();
+  price.value = 120;
+  quantity.value = 1;
+};
 </script>
 
 <template>
   <div class="space-y-8">
     <!-- Header -->
     <section class="text-center">
-      <h1 class="neo-title inline-block mb-4">⚡ REACTIVITY OPTIMIZATION</h1>
+      <h1 class="neo-title inline-block mb-4">⚡ REACTIVITY IN VUE</h1>
       <p class="text-xl text-neo-black max-w-3xl mx-auto">
-        Compare deep vs shallow reactivity with simple examples!
+        Simple examples of deep vs shallow reactivity
       </p>
     </section>
 
     <!-- Theory Section -->
     <section class="neo-section bg-neo-pink">
       <h2 class="text-2xl font-bold mb-4 text-neo-white">📚 THEORY</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🔍 Deep Reactivity</h3>
           <p class="text-neo-black mb-3">
-            <code class="bg-neo-yellow px-2 py-1">reactive()</code> with
-            <code class="bg-neo-yellow px-2 py-1">deep: true</code>
+            <code class="bg-neo-yellow px-2 py-1">reactive()</code>
             tracks ALL nested properties recursively.
           </p>
-          <p class="text-sm text-neo-black">⚠️ Every nested change triggers watchers!</p>
+          <p class="text-sm text-neo-black">
+            ✅ When nested properties change, the UI updates automatically!
+          </p>
         </div>
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-3">🏃 Shallow Reactivity</h3>
@@ -174,20 +198,8 @@ watch(
             <code class="bg-neo-blue text-neo-white px-2 py-1">shallowReactive()</code>
             only tracks top-level property changes.
           </p>
-          <p class="text-sm text-neo-black">✅ Nested changes don't trigger watchers!</p>
-        </div>
-        <div class="neo-card bg-neo-white">
-          <h3 class="text-xl font-bold text-neo-black mb-3">📊 Simple Example</h3>
-          <p class="text-neo-black mb-3">
-            We'll use a simple object with just a few properties:
-            <code class="bg-neo-blue text-neo-white px-2 py-1">name</code>,
-            <code class="bg-neo-blue text-neo-white px-2 py-1">count</code>, and nested
-            <code class="bg-neo-blue text-neo-white px-2 py-1"
-              >profile.preferences.notifications.email</code
-            >
-          </p>
           <p class="text-sm text-neo-black">
-            ✅ Easy to understand the difference in behavior!
+            ⚠️ Nested changes won't update the UI automatically!
           </p>
         </div>
       </div>
@@ -195,16 +207,16 @@ watch(
 
     <!-- Interactive Demo -->
     <section class="neo-section bg-neo-blue">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🎮 PERFORMANCE COMPARISON</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-white">🎮 EXAMPLES</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Deep Reactivity Demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
-            🔍 Deep Reactivity (reactive + deep watch)
+            🔍 Deep Reactivity Example
           </h3>
           <p class="text-sm text-neo-black mb-4">
-            Simple object with nested properties. Every nested change triggers watchers!
+            Using <code>reactive()</code> - all nested changes are tracked automatically
           </p>
 
           <div class="space-y-4">
@@ -226,18 +238,13 @@ watch(
               @click="updateDeepNestedProperty"
               class="neo-button bg-neo-yellow text-neo-black w-full"
             >
-              ⚠️ Toggle Email Notification (Nested Property)
+              🌓 Toggle Dark Mode (Nested Property)
             </button>
 
             <div class="bg-neo-yellow p-4 border-2 border-neo-black">
-              <h4 class="font-bold text-neo-black mb-2">Performance Metrics:</h4>
+              <h4 class="font-bold text-neo-black mb-2">Status:</h4>
               <div class="text-sm text-neo-black space-y-1">
-                <div><strong>Watch Calls:</strong> {{ deepWatchCount }}</div>
-                <div><strong>Render Count:</strong> {{ deepRenderCount }}</div>
-                <div>
-                  <strong>Last Operation Time:</strong>
-                  {{ deepPerformanceTime.toFixed(3) }}ms
-                </div>
+                <div><strong>Last Action:</strong> {{ deepChangeMessage }}</div>
               </div>
             </div>
 
@@ -267,20 +274,16 @@ watch(
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">📧 Email Notifications:</span>
+                  <span class="font-bold text-neo-black">🌓 Dark Mode:</span>
                   <span
                     class="px-2 py-1 rounded font-bold"
                     :class="
-                      deepUser.profile.preferences.notifications.email
+                      deepUser.settings.darkMode
                         ? 'bg-neo-green text-neo-white'
                         : 'bg-neo-pink text-neo-white'
                     "
                   >
-                    {{
-                      deepUser.profile.preferences.notifications.email
-                        ? "🟢 ON"
-                        : "🔴 OFF"
-                    }}
+                    {{ deepUser.settings.darkMode ? "🌙 ON" : "☀️ OFF" }}
                   </span>
                 </div>
               </div>
@@ -291,10 +294,10 @@ watch(
         <!-- Shallow Reactivity Demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
-            🏃 Shallow Reactivity (shallowReactive)
+            🏃 Shallow Reactivity Example
           </h3>
           <p class="text-sm text-neo-black mb-4">
-            Same simple object, but only top-level changes trigger watchers!
+            Using <code>shallowReactive()</code> - only top-level changes are tracked
           </p>
 
           <div class="space-y-4">
@@ -302,21 +305,21 @@ watch(
               @click="updateShallowName"
               class="neo-button bg-neo-green text-neo-white w-full"
             >
-              ✅ Update Name (Top Level - Triggers Watcher)
+              ✅ Update Name (Top Level - Works)
             </button>
 
             <button
               @click="incrementShallowCount"
               class="neo-button bg-neo-blue text-neo-white w-full"
             >
-              🔢 Increment Count (Top Level - Triggers Watcher)
+              🔢 Increment Count (Top Level - Works)
             </button>
 
             <button
               @click="updateShallowNestedProperty"
               class="neo-button bg-neo-yellow text-neo-black w-full"
             >
-              ⚡ Toggle Email Notification (Nested - Needs Force Update!)
+              🌓 Toggle Dark Mode (Nested - Won't Update UI!)
             </button>
 
             <button
@@ -327,14 +330,10 @@ watch(
             </button>
 
             <div class="bg-neo-yellow p-4 border-2 border-neo-black">
-              <h4 class="font-bold text-neo-black mb-2">Performance Metrics:</h4>
+              <h4 class="font-bold text-neo-black mb-2">Status:</h4>
               <div class="text-sm text-neo-black space-y-1">
-                <div><strong>Watch Calls:</strong> {{ shallowWatchCount }}</div>
-                <div><strong>Render Count:</strong> {{ shallowRenderCount }}</div>
-                <div>
-                  <strong>Last Operation Time:</strong>
-                  {{ shallowPerformanceTime.toFixed(3) }}ms
-                </div>
+                <div><strong>Last Action:</strong> {{ shallowChangeMessage }}</div>
+                <div><strong>Force Updates:</strong> {{ forceUpdate }}</div>
               </div>
             </div>
 
@@ -364,21 +363,16 @@ watch(
                 <div
                   class="flex justify-between items-center bg-neo-white bg-opacity-90 px-3 py-2 rounded"
                 >
-                  <span class="font-bold text-neo-black">📧 Email Notifications:</span>
+                  <span class="font-bold text-neo-black">🌓 Dark Mode:</span>
                   <span
                     class="px-2 py-1 rounded font-bold"
                     :class="
-                      shallowUser.profile.preferences.notifications.email
+                      shallowUser.settings.darkMode
                         ? 'bg-neo-green text-neo-white'
                         : 'bg-neo-pink text-neo-white'
                     "
                   >
-                    {{
-                      shallowUser.profile.preferences.notifications.email
-                        ? "🟢 ON"
-                        : "🔴 OFF"
-                    }}
-                    ({{ forceUpdate }})
+                    {{ shallowUser.settings.darkMode ? "🌙 ON" : "☀️ OFF" }}
                   </span>
                 </div>
               </div>
@@ -387,91 +381,164 @@ watch(
         </div>
       </div>
 
-      <!-- Performance Comparison Chart -->
+      <!-- Key Differences -->
       <div class="mt-8 neo-card bg-neo-yellow">
-        <h3 class="text-xl font-bold text-neo-black mb-4">📊 PERFORMANCE BATTLE</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div class="text-3xl font-bold text-neo-pink">{{ deepWatchCount }}</div>
-            <div class="text-sm text-neo-black">Deep Watch Calls</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-neo-blue">{{ shallowWatchCount }}</div>
-            <div class="text-sm text-neo-black">Shallow Watch Calls</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-neo-pink">
-              {{ deepPerformanceTime.toFixed(1) }}ms
-            </div>
-            <div class="text-sm text-neo-black">Deep Last Operation</div>
-          </div>
-          <div>
-            <div class="text-3xl font-bold text-neo-blue">
-              {{ shallowPerformanceTime.toFixed(1) }}ms
-            </div>
-            <div class="text-sm text-neo-black">Shallow Last Operation</div>
-          </div>
-        </div>
+        <h3 class="text-xl font-bold text-neo-black mb-4">🗝️ KEY DIFFERENCES</h3>
 
-        <div class="mt-4 p-4 bg-neo-white border-2 border-neo-black">
-          <h4 class="font-bold text-neo-black mb-2">🎯 Key Insight:</h4>
+        <div class="p-4 bg-neo-white border-2 border-neo-black">
+          <h4 class="font-bold text-neo-black mb-2">When to use which:</h4>
           <p class="text-sm text-neo-black">
-            Try clicking the buttons and watch the "Watch Calls" count!
-            <br /><br />
-            <strong>Deep Reactivity:</strong> ALL changes (even nested ones) trigger
-            watchers.
+            <strong>Deep Reactivity (reactive):</strong>
             <br />
-            <strong>Shallow Reactivity:</strong> Only top-level changes trigger watchers.
-            <br /><br />
-            <strong>Notice:</strong> When you toggle email notifications:
+            • Use when you need to track ALL property changes
             <br />
-            - Deep: Watch count increases ✅ and UI updates automatically
+            • Changes to nested properties automatically update the UI
             <br />
-            - Shallow: Watch count stays the same ❌ and we need to force update the UI!
+            • Simplest to use, but can be less efficient for large objects
             <br /><br />
-            <strong>The number in parentheses</strong> next to the shallow email status
-            shows how many times we've forced the UI to update.
+            <strong>Shallow Reactivity (shallowReactive):</strong>
+            <br />
+            • Use when you only need to track top-level properties
+            <br />
+            • Changes to nested objects need manual handling
+            <br />
+            • More efficient for large objects with deep nesting
+            <br /><br />
+            <strong>To update nested properties in shallowReactive:</strong>
+            <br />
+            • Replace the entire nested object with a new reference
+            <br />
+            • Example: <code>user.settings = {...user.settings, darkMode: true}</code>
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Computed vs Watch Demo -->
+    <!-- Computed vs Watchers Demo -->
     <section class="neo-section bg-neo-green">
-      <h2 class="text-2xl font-bold mb-6 text-neo-black">🧮 COMPUTED vs WATCH</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">COMPUTED VS WATCHERS</h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Shared controls at top -->
+      <div class="bg-neo-white p-4 mb-6 border-4 border-neo-black">
+        <h3 class="text-xl font-bold text-neo-black mb-4">Demo Controls</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            @click="updateNameDemo"
+            class="neo-button bg-neo-purple text-neo-white w-full"
+          >
+            Update Name
+          </button>
+          
+          <button
+            @click="updateCartDemo"
+            class="neo-button bg-neo-yellow text-neo-black w-full"
+          >
+            Update Cart
+          </button>
+          
+          <button
+            @click="addExpensiveItemDemo"
+            class="neo-button bg-neo-pink text-neo-white w-full"
+          >
+            Add Expensive Item
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Computed Properties Demo -->
         <div class="neo-card bg-neo-white">
-          <h3 class="text-xl font-bold text-neo-black mb-4">
-            ✅ Using Computed (Optimized)
-          </h3>
-          <input
-            v-model="computedInput"
-            class="neo-input w-full mb-4"
-            placeholder="Type something..."
-          />
-          <div class="bg-neo-blue text-neo-white p-3 border-2 border-neo-black">
-            <strong>Computed Result:</strong> {{ expensiveComputed }}
-          </div>
-          <div class="text-sm text-neo-black mt-2">
-            <strong>Computed Calls:</strong> {{ computedCallCount }}
+          <h3 class="text-xl font-bold text-neo-black mb-4">🧠 Computed Properties</h3>
+          <p class="text-sm text-neo-black mb-4">
+            <strong>Use Case:</strong> Formatting names and calculating prices - data transformations that return values
+          </p>
+
+          <div class="space-y-4">
+            <div class="bg-neo-blue p-4 text-neo-white">
+              <h4 class="font-bold mb-2">Example 1: Name Formatting</h4>
+              <div class="flex flex-col gap-2 mb-4">
+                <div class="flex gap-2">
+                  <div><strong>First Name:</strong> {{ firstName }}</div>
+                  <div><strong>Last Name:</strong> {{ lastName }}</div>
+                </div>
+                <div>
+                  <strong>Full Name (Computed):</strong> {{ fullName }}
+                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-white rounded-full text-xs">
+                    Recalculations: {{ computedExecutionCount }}
+                  </div>
+                </div>
+              </div>
+              
+              <h4 class="font-bold mb-2">Example 2: Shopping Cart</h4>
+              <div class="flex flex-col gap-2">
+                <div class="flex gap-4">
+                  <div><strong>Price:</strong> ${{ price }}</div>
+                  <div><strong>Quantity:</strong> {{ quantity }}</div>
+                </div>
+                <div>
+                  <strong>Total Price (Computed):</strong> ${{ totalPrice }}
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-neo-yellow p-4 border-2 border-neo-black">
+              <h4 class="font-bold text-neo-black mb-2">When to Use Computed Properties:</h4>
+              <ul class="list-disc pl-5 text-sm text-neo-black">
+                <li><strong>✅ For data transformations:</strong> formatting names, calculating totals</li>
+                <li><strong>✅ For derived values:</strong> filtered lists, sorted arrays</li>
+                <li><strong>✅ For template values:</strong> display data that depends on other values</li>
+                <li><strong>✅ For caching:</strong> complex calculations that should be reused</li>
+                <li><strong>✅ When you need a value:</strong> computed always returns a value</li>
+              </ul>
+            </div>
           </div>
         </div>
 
+        <!-- Watchers Demo -->
         <div class="neo-card bg-neo-white">
-          <h3 class="text-xl font-bold text-neo-black mb-4">
-            ❌ Using Watch (Less Optimal)
-          </h3>
-          <input
-            v-model="watchInput"
-            class="neo-input w-full mb-4"
-            placeholder="Type something..."
-          />
-          <div class="bg-neo-pink text-neo-white p-3 border-2 border-neo-black">
-            <strong>Watch Result:</strong> {{ watchResult }}
-          </div>
-          <div class="text-sm text-neo-black mt-2">
-            <strong>Watch Calls:</strong> {{ watchCallCount }}
+          <h3 class="text-xl font-bold text-neo-black mb-4">👀 Watchers</h3>
+          <p class="text-sm text-neo-black mb-4">
+            <strong>Use Case:</strong> Shipping notifications and activity logging - side effects that respond to changes
+          </p>
+
+          <div class="space-y-4">
+            <div class="bg-neo-blue p-4 text-neo-white">
+              <h4 class="font-bold mb-2">Example 1: Shopping Cart with Shipping</h4>
+              <div class="flex flex-col gap-2 mb-4">
+                <div><strong>Cart Total:</strong> ${{ cartTotal }}</div>
+                <div>
+                  <strong>Shipping Status:</strong> 
+                  <div class="px-3 py-1 mt-1 inline-block rounded" 
+                      :class="cartTotal >= 100 ? 'bg-neo-green text-neo-white' : 'bg-neo-yellow text-neo-black'">
+                    {{ shippingMessage }}
+                  </div>
+                  <div class="px-2 py-1 mt-1 inline-block bg-neo-purple text-neo-white rounded-full text-xs">
+                    Watcher runs: {{ watchExecutionCount }}
+                  </div>
+                </div>
+              </div>
+              
+              <h4 class="font-bold mb-2">Example 2: User Activity Log</h4>
+              <div class="max-h-20 overflow-y-auto p-2 bg-neo-black bg-opacity-50 rounded">
+                <div v-for="(log, index) in userActivityLog" :key="index" class="text-sm">
+                  {{ log }}
+                </div>
+                <div v-if="!userActivityLog.length" class="text-sm opacity-50">
+                  No user activity yet. Try updating the name.
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-neo-yellow p-4 border-2 border-neo-black">
+              <h4 class="font-bold text-neo-black mb-2">When to Use Watchers:</h4>
+              <ul class="list-disc pl-5 text-sm text-neo-black">
+                <li><strong>✅ For side effects:</strong> showing notifications, alerts</li>
+                <li><strong>✅ For async operations:</strong> API calls, debounced searches</li>
+                <li><strong>✅ For tracking changes:</strong> logging, analytics</li>
+                <li><strong>✅ For responding to events:</strong> form validation, saving data</li>
+                <li><strong>✅ When you don't need a return value:</strong> watchers perform actions</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
