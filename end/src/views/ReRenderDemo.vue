@@ -6,10 +6,7 @@ import MountUnmount from "../components/MountUnmount.vue";
 const counter = ref(0);
 
 // v-memo demo
-const memoText = ref('Initial text');
-const nonDependency = ref(0);
-const standardRenderCount = ref(0);
-const memoRenderCount = ref(0);
+const count = ref(0);
 
 // v-show vs v-if demo 
 const showVIf = ref(true);
@@ -101,30 +98,15 @@ const vShowMountCount = ref(0);
       <div class="space-y-6">
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">Control Panel</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-bold text-neo-black mb-2">Memo Dependency:</label>
-              <input 
-                v-model="memoText"
-                class="neo-button bg-neo-blue text-neo-black w-full p-2" 
-                placeholder="Change this text"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2">Non-dependency:</label>
+              <label class="block text-sm font-bold text-neo-black mb-2">Update Counter:</label>
               <button
-                @click="nonDependency++"
+                @click="count++"
                 class="neo-button bg-neo-purple text-neo-black w-full"
               >
-                Click me: {{ nonDependency }}
+                Click to increment: {{ count }}
               </button>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2">Compare Renders:</label>
-              <div class="text-sm font-bold text-neo-black">
-                Standard: {{ standardRenderCount }}<br>
-                Optimized: {{ memoRenderCount }}
-              </div>
             </div>
           </div>
         </div>
@@ -135,13 +117,12 @@ const vShowMountCount = ref(0);
             <h3 class="text-lg font-bold text-neo-black mb-4">❌ Without v-memo</h3>
             <div class="neo-card bg-neo-pink p-4 text-neo-black">
               <div @vue:render="standardRenderCount++">
-                <p class="text-lg font-bold">Text: {{ memoText }}</p>
-                <p class="mt-2">Non-dependency: {{ nonDependency }}</p>
+                <p class="text-lg font-bold">Counter: {{ count }}</p>
                 <p class="mt-4 text-sm">This renders on EVERY state change</p>
               </div>
             </div>
             <div class="text-sm text-neo-black mt-2">
-              🔥 Re-renders when ANY reactive value changes
+              🔥 Re-renders when count changes
             </div>
           </div>
 
@@ -149,14 +130,13 @@ const vShowMountCount = ref(0);
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">✅ With v-memo</h3>
             <div class="neo-card bg-neo-green p-4 text-neo-black">
-              <div v-memo="[memoText]" @vue:render="memoRenderCount++">
-                <p class="text-lg font-bold">Text: {{ memoText }}</p>
-                <p class="mt-2">Non-dependency: {{ nonDependency }}</p>
-                <p class="mt-4 text-sm">This only renders when text changes</p>
+              <div v-memo="[count > 5]">
+                <p class="text-lg font-bold">Counter: {{ count }}</p>
+                <p class="mt-4 text-sm">This only renders when count crosses threshold of 5</p>
               </div>
             </div>
             <div class="text-sm text-neo-black mt-2">
-              ✅ Only re-renders when memoText changes
+              ✅ Only re-renders when count > 5
             </div>
           </div>
         </div>

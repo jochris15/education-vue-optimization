@@ -38,7 +38,7 @@ Maka, Gunakan `debounce` atau `throttle` untuk membatasi frekuensi eksekusi fung
 ### Reduce Component Re-render
 Untuk menghindari komponen yang sering di-render ulang:
 - Gunakan [`v-once`](https://vuejs.org/api/built-in-directives.html#v-once) untuk merender elemen hanya sekali, jika tidak ada perubahan yang diharapkan.
-- Gunakan [`v-memo`](https://vuejs.org/api/built-in-directives.html#v-memo) untuk menghindari re-render komponen yang tidak perlu, dengan menyimpan hasil render sebelumnya.
+- Gunakan [`v-memo`](https://vuejs.org/api/built-in-directives.html#v-memo) mirip seperti `v-once`, tapi dengan kondisi tertentu. Ini menghindari re-render jika kondisi tidak berubah.
 - Gunakan [`v-show`](https://vuejs.org/api/built-in-directives.html#v-show) daripada [`v-if`](https://vuejs.org/api/built-in-directives.html#v-if) jika elemen hanya perlu disembunyikan, karena `v-show` hanya mengubah visibilitas CSS tanpa merender ulang.  
 
 ### Lazy Loading
