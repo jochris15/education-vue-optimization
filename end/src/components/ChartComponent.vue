@@ -20,15 +20,12 @@ const drawChart = () => {
   const ctx = chartCanvas.value.getContext('2d')
   const canvas = chartCanvas.value
   
-  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-  
-  // Set styles
+
   ctx.fillStyle = '#ff006e'
   ctx.strokeStyle = '#000000'
   ctx.lineWidth = 2
   
-  // Draw bars
   const barWidth = canvas.width / dataPoints.value.length
   const maxValue = Math.max(...dataPoints.value)
   
@@ -37,11 +34,9 @@ const drawChart = () => {
     const x = index * barWidth
     const y = canvas.height - barHeight
     
-    // Draw bar
     ctx.fillRect(x + 2, y, barWidth - 4, barHeight)
     ctx.strokeRect(x + 2, y, barWidth - 4, barHeight)
     
-    // Draw value label
     ctx.fillStyle = '#000000'
     ctx.font = '12px monospace'
     ctx.fillText(value.toString(), x + barWidth/2 - 10, y - 5)
@@ -50,7 +45,6 @@ const drawChart = () => {
 }
 
 onMounted(() => {
-  // Simulate component loading time
   setTimeout(() => {
     generateNewData()
     emit('loaded')

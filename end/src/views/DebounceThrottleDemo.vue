@@ -61,7 +61,6 @@ const handleThrottleClick = throttle(() => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
     <section class="text-center">
       <h1 class="neo-title inline-block mb-4">⏱️ DEBOUNCE & THROTTLE</h1>
       <p class="text-xl text-neo-black max-w-3xl mx-auto">
@@ -69,7 +68,7 @@ const handleThrottleClick = throttle(() => {
       </p>
     </section>
 
-    <!-- Theory Section -->
+    <!-- theory -->
     <section class="neo-section bg-neo-blue">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">
         📚 UNDERSTANDING THE DIFFERENCE
@@ -144,7 +143,7 @@ const handleThrottleClick = throttle(() => {
           <div class="text-xs text-neo-black">⏱️ Waits 500ms after you stop typing</div>
         </div>
 
-        <!-- Throttled -->
+        <!-- throttled -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">⚡ Throttled (1000ms)</h3>
           <input
@@ -162,12 +161,12 @@ const handleThrottleClick = throttle(() => {
       </div>
     </section>
 
-    <!-- Scroll Demo -->
+    <!-- scroll demo -->
     <section class="neo-section bg-neo-green">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">📜 SCROLL EVENT DEMO</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Normal Scroll -->
+        <!-- normal scroll -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">❌ Normal Scroll Handler</h3>
           <div
@@ -184,7 +183,7 @@ const handleThrottleClick = throttle(() => {
           </div>
         </div>
 
-        <!-- Throttled Scroll -->
+        <!-- throttled scroll -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">
             ✅ Throttled Scroll Handler
@@ -206,12 +205,12 @@ const handleThrottleClick = throttle(() => {
       </div>
     </section>
 
-    <!-- Button Click Demo -->
+    <!-- button click demo -->
     <section class="neo-section bg-neo-purple">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">🖱️ BUTTON CLICK DEMO</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Normal Button -->
+        <!-- normal button -->
         <div class="neo-card bg-neo-white text-center">
           <h3 class="text-lg font-bold text-neo-black mb-4">❌ Normal Button</h3>
           <button
@@ -227,7 +226,7 @@ const handleThrottleClick = throttle(() => {
           </div>
         </div>
 
-        <!-- Throttle Button -->
+        <!-- throttle button -->
         <div class="neo-card bg-neo-white text-center">
           <h3 class="text-lg font-bold text-neo-black mb-4">✅ Throttle Button</h3>
           <button
@@ -244,8 +243,7 @@ const handleThrottleClick = throttle(() => {
         </div>
       </div>
     </section>
-
-    <!-- Performance Summary -->
+    
     <section class="neo-section bg-neo-yellow">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">📊 PERFORMANCE SUMMARY</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">

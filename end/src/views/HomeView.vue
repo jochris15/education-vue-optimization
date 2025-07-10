@@ -1,9 +1,4 @@
 <script setup>
-import { ref, onMounted, onUpdated } from "vue";
-
-// Performance tracking
-const renderCount = ref(0);
-
 const challenges = [
   {
     title: "🔄 Over-reactivity",
@@ -58,18 +53,10 @@ const demos = [
   },
 ];
 
-onMounted(() => {
-  renderCount.value++;
-});
-
-onUpdated(() => {
-  renderCount.value++;
-});
 </script>
 
 <template>
   <div class="space-y-8">
-    <!-- Hero Section -->
     <section class="text-center py-12">
       <h1 class="neo-title inline-block text-6xl mb-6">VUE OPTIMIZATION</h1>
       <p class="text-2xl font-bold text-neo-black max-w-4xl mx-auto">
@@ -77,7 +64,6 @@ onUpdated(() => {
       </p>
     </section>
 
-    <!-- Why Optimization Section -->
     <section class="neo-section">
       <h2 class="text-3xl font-bold mb-6 text-neo-black">🤔 WHY NEED OPTIMIZATION?</h2>
       <p class="text-xl mb-6 text-neo-black">
@@ -97,7 +83,6 @@ onUpdated(() => {
       </div>
     </section>
 
-    <!-- Demo Cards -->
     <section class="mt-20">
       <h2 class="text-3xl font-bold text-center mb-8 text-neo-black">
         🛠️ INTERACTIVE DEMOS

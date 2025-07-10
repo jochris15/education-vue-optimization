@@ -10,7 +10,7 @@ const navLinks = [
 
 <template>
   <div class="min-h-screen bg-neo-white">
-    <!-- Navigation -->
+    <!-- navigation -->
     <nav class="bg-neo-black border-b-8 border-neo-pink p-4">
       <div class="container mx-auto">
         <h1 class="text-3xl font-bold text-neo-white mb-4">VUE OPTIMIZATION DEMO</h1>
@@ -28,12 +28,12 @@ const navLinks = [
       </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- main -->
     <main class="container mx-auto p-6">
       <RouterView />
     </main>
 
-    <!-- Footer -->
+    <!-- footer -->
     <footer class="bg-neo-purple text-neo-white p-6 mt-12 border-t-8 border-neo-black">
       <div class="container mx-auto text-center">
         <p class="text-sm mt-2 text-neo-black">Vue.js Optimization Techniques Demo By Joshua C</p>

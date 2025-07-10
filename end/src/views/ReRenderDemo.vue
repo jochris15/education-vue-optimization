@@ -21,7 +21,6 @@ const vShowMountCount = ref(0);
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
     <section class="text-center">
       <h1 class="neo-title inline-block mb-4">🎯 RE-RENDER OPTIMIZATION</h1>
       <p class="text-xl text-neo-black max-w-3xl mx-auto">
@@ -29,7 +28,7 @@ const vShowMountCount = ref(0);
       </p>
     </section>
 
-    <!-- Theory Section -->
+    <!-- theory -->
     <section class="neo-section bg-neo-yellow">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">📚 OPTIMIZATION TECHNIQUES</h2>
 
@@ -51,12 +50,12 @@ const vShowMountCount = ref(0);
       </div>
     </section>
 
-    <!-- v-once Demo -->
+    <!-- v-once demo -->
     <section class="neo-section bg-neo-blue">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">1️⃣ V-ONCE DEMO</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Without v-once -->
+        <!-- without v-once -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">❌ Without v-once</h3>
           <div class="mb-4">
@@ -74,7 +73,7 @@ const vShowMountCount = ref(0);
           </div>
         </div>
 
-        <!-- With v-once -->
+        <!-- with v-once -->
        <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">✅ With v-once</h3>
           <div class="mb-4">
@@ -95,7 +94,7 @@ const vShowMountCount = ref(0);
       </div>
     </section>
 
-    <!-- v-memo Demo -->
+    <!-- v-memo demo -->
     <section class="neo-section bg-neo-green">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">🧠 V-MEMO DEMO</h2>
 
@@ -131,7 +130,7 @@ const vShowMountCount = ref(0);
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Without v-memo -->
+          <!-- without v-memo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">❌ Without v-memo</h3>
             <div class="neo-card bg-neo-pink p-4 text-neo-black">
@@ -146,7 +145,7 @@ const vShowMountCount = ref(0);
             </div>
           </div>
 
-          <!-- With v-memo -->
+          <!-- with v-memo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">✅ With v-memo</h3>
             <div class="neo-card bg-neo-green p-4 text-neo-black">
@@ -164,7 +163,7 @@ const vShowMountCount = ref(0);
       </div>
     </section>
 
-    <!-- v-show vs v-if Demo -->
+    <!-- v-show vs v-if demo -->
     <section class="neo-section bg-neo-purple">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">👁️ V-SHOW vs V-IF DEMO</h2>
 
@@ -190,7 +189,7 @@ const vShowMountCount = ref(0);
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- v-if Demo -->
+          <!-- v-if demo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">🔄 Using v-if</h3>
             <div class="neo-card bg-neo-yellow p-4 min-h-[200px]">
@@ -212,7 +211,7 @@ const vShowMountCount = ref(0);
             </div>
           </div>
 
-          <!-- v-show Demo -->
+          <!-- v-show demo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">👁️ Using v-show</h3>
             <div class="neo-card bg-neo-blue text-neo-black p-4 min-h-[200px]">

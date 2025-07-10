@@ -83,7 +83,7 @@ const loadComponent = async (componentName) => {
       </div>
     </section>
 
-    <!-- demo -->
+    <!-- lazy loading demo -->
     <section class="neo-section bg-neo-blue">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">🎭 DYNAMIC COMPONENT LOADING</h2>
 
@@ -138,7 +138,6 @@ const loadComponent = async (componentName) => {
       </div>
     </section>
 
-    <!-- performance Benefits -->
     <section class="neo-section bg-neo-purple">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">🎯 PERFORMANCE BENEFITS</h2>
 

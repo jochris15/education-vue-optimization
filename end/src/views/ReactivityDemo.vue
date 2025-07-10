@@ -82,7 +82,7 @@ watch(
 );
 
 //-----------------------------------------------------------------------------//
-// Computed vs Watchers 
+// computed vs watchers 
 const firstName = ref("John");
 const lastName = ref("Doe");
 const price = ref(10);
@@ -170,7 +170,6 @@ const addExpensiveItemDemo = () => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
     <section class="text-center">
       <h1 class="neo-title inline-block mb-4">⚡ REACTIVITY IN VUE</h1>
       <p class="text-xl text-neo-black max-w-3xl mx-auto">
@@ -178,7 +177,7 @@ const addExpensiveItemDemo = () => {
       </p>
     </section>
 
-    <!-- Theory Section -->
+    <!-- theory -->
     <section class="neo-section bg-neo-pink">
       <h2 class="text-2xl font-bold mb-4 text-neo-black">📚 THEORY</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -205,12 +204,12 @@ const addExpensiveItemDemo = () => {
       </div>
     </section>
 
-    <!-- Interactive Demo -->
+    <!-- reactivity demo -->
     <section class="neo-section bg-neo-blue">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">🎮 EXAMPLES</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Deep Reactivity Demo -->
+        <!-- deep reactivity demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
             🔍 Deep Reactivity Example
@@ -291,7 +290,7 @@ const addExpensiveItemDemo = () => {
           </div>
         </div>
 
-        <!-- Shallow Reactivity Demo -->
+        <!-- shallow reactivity demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">
             🏃 Shallow Reactivity Example
@@ -381,7 +380,6 @@ const addExpensiveItemDemo = () => {
         </div>
       </div>
 
-      <!-- Key Differences -->
       <div class="mt-8 neo-card bg-neo-yellow">
         <h3 class="text-xl font-bold text-neo-black mb-4">🗝️ KEY DIFFERENCES</h3>
 
@@ -414,11 +412,9 @@ const addExpensiveItemDemo = () => {
       </div>
     </section>
 
-    <!-- Computed vs Watchers Demo -->
+    <!-- computed vs watchers demo -->
     <section class="neo-section bg-neo-green">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">COMPUTED VS WATCHERS</h2>
-
-      <!-- Shared controls at top -->
       <div class="bg-neo-white p-4 mb-6 border-4 border-neo-black">
         <h3 class="text-xl font-bold text-neo-black mb-4">Demo Controls</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -446,7 +442,7 @@ const addExpensiveItemDemo = () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Computed Properties Demo -->
+        <!-- computed properties demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">🧠 Computed Properties</h3>
           <p class="text-sm text-neo-black mb-4">
@@ -494,7 +490,7 @@ const addExpensiveItemDemo = () => {
           </div>
         </div>
 
-        <!-- Watchers Demo -->
+        <!-- watchers demo -->
         <div class="neo-card bg-neo-white">
           <h3 class="text-xl font-bold text-neo-black mb-4">👀 Watchers</h3>
           <p class="text-sm text-neo-black mb-4">
