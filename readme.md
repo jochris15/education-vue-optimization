@@ -37,15 +37,15 @@ Maka, Gunakan `debounce` atau `throttle` untuk membatasi frekuensi eksekusi fung
 
 ### Reduce Component Re-render
 Untuk menghindari komponen yang sering di-render ulang:
-- Gunakan attribute `key` pada elemen yang diulang (loop) untuk membantu Vue mengidentifikasi elemen yang berubah.
-- Gunakan `v-once` untuk merender elemen hanya sekali, jika tidak ada perubahan yang diharapkan.
-- Gunakan `v-memo` untuknghindari re-render me
-- Gunakan `v-show` daripada `v-if` jika elemen hanya perlu disembunyikan, karena `v-show` hanya mengubah visibilitas CSS tanpa merender ulang.  
+- Gunakan [`v-once`](https://vuejs.org/api/built-in-directives.html#v-once) untuk merender elemen hanya sekali, jika tidak ada perubahan yang diharapkan.
+- Gunakan [`v-memo`](https://vuejs.org/api/built-in-directives.html#v-memo) untuk menghindari re-render komponen yang tidak perlu, dengan menyimpan hasil render sebelumnya.
+- Gunakan [`v-show`](https://vuejs.org/api/built-in-directives.html#v-show) daripada [`v-if`](https://vuejs.org/api/built-in-directives.html#v-if) jika elemen hanya perlu disembunyikan, karena `v-show` hanya mengubah visibilitas CSS tanpa merender ulang.  
 
 ### Lazy Loading
 Lazy loading adalah teknik untuk memuat komponen atau resource hanya saat dibutuhkan, bukan saat aplikasi dimuat pertama kali. Ini mengurangi ukuran bundle awal dan mempercepat loading awal.
 
 Vue.js menyediakan dua pendekatan utama untuk menerapkan lazy loading :  
-- Melalui `Vue Router`, di mana setiap rute dapat dimuat secara dinamis hanya saat dibutuhkan. 
-- Dengan memanfaatkan fungsi `defineAsyncComponent` dari Vue.js untuk memuat komponen tertentu secara terpisah, sehingga aplikasi menjadi lebih ringan dan efisien.
+- Melalui [`Vue Router`](https://router.vuejs.org/guide/advanced/lazy-loading.html), di mana setiap rute dapat dimuat secara dinamis hanya saat dibutuhkan. 
+- Dengan memanfaatkan fungsi [`defineAsyncComponent`](https://vuejs.org/guide/components/async#async-components) dari Vue.js untuk memuat komponen tertentu secara terpisah, sehingga aplikasi menjadi lebih ringan dan efisien.
+- Gunakan [`Suspense`](https://vuejs.org/guide/built-ins/suspense) untuk menunggu asynchronus component selesai dimuat sebelum merendernya.
 

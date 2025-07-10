@@ -1,76 +1,17 @@
 <script setup>
-import { ref, computed, watch, defineAsyncComponent } from "vue";
-
-// Lazy load heavy components
-const ItemComponent = defineAsyncComponent(() =>
-  import("../components/ItemComponent.vue")
-);
-const ExpensiveComponent = defineAsyncComponent(() =>
-  import("../components/ExpensiveComponent.vue")
-);
-const HeavyComponent = defineAsyncComponent(() =>
-  import("../components/HeavyComponent.vue")
-);
-
-// Key demo
-const itemsWithoutKey = ref([
-  { id: 1, name: "Apple", value: "" },
-  { id: 2, name: "Banana", value: "" },
-  { id: 3, name: "Cherry", value: "" },
-]);
-
-const itemsWithKey = ref([
-  { id: 1, name: "Apple", value: "" },
-  { id: 2, name: "Banana", value: "" },
-  { id: 3, name: "Cherry", value: "" },
-]);
-
-const shuffleItemsWithoutKey = () => {
-  itemsWithoutKey.value = [...itemsWithoutKey.value].sort(() => Math.random() - 0.5);
-};
-
-const shuffleItemsWithKey = () => {
-  itemsWithKey.value = [...itemsWithKey.value].sort(() => Math.random() - 0.5);
-};
+import { ref} from "vue";
+import MountUnmount from "../components/MountUnmount.vue";
 
 // v-once demo
 const counter = ref(0);
-const calculationCalls = ref(0);
-
-const expensiveCalculation = computed(() => {
-  // Simulate expensive calculation
-  let result = 0;
-  for (let i = 0; i < 1000000; i++) {
-    result += Math.random();
-  }
-  return Math.round(result);
-});
-
-// Track calculation calls with a watcher instead
-watch(
-  expensiveCalculation,
-  () => {
-    calculationCalls.value++;
-  },
-  { immediate: true }
-);
-
-const expensiveCalculationOnce = computed(() => {
-  // This will only be calculated once due to v-once
-  let result = 0;
-  for (let i = 0; i < 1000000; i++) {
-    result += Math.random();
-  }
-  return Math.round(result);
-});
 
 // v-memo demo
-const memoDependency = ref(0);
-const otherValue = ref(0);
+const memoText = ref('Initial text');
+const nonDependency = ref(0);
+const standardRenderCount = ref(0);
 const memoRenderCount = ref(0);
-const memoOptimizedRenderCount = ref(0);
 
-// v-show vs v-if demo
+// v-show vs v-if demo 
 const showVIf = ref(true);
 const showVShow = ref(true);
 const vIfMountCount = ref(0);
@@ -92,13 +33,7 @@ const vShowMountCount = ref(0);
     <section class="neo-section bg-neo-yellow">
       <h2 class="text-2xl font-bold mb-6 text-neo-black">📚 OPTIMIZATION TECHNIQUES</h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="neo-card bg-neo-white">
-          <h3 class="text-lg font-bold text-neo-black mb-2">🔑 KEY Attribute</h3>
-          <p class="text-sm text-neo-black">
-            Helps Vue identify which items have changed in lists
-          </p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-2">1️⃣ v-once</h3>
           <p class="text-sm text-neo-black">Renders element/component only once</p>
@@ -116,68 +51,9 @@ const vShowMountCount = ref(0);
       </div>
     </section>
 
-    <!-- Key Attribute Demo -->
-    <section class="neo-section bg-neo-pink">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">🔑 KEY ATTRIBUTE DEMO</h2>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Without Key -->
-        <div class="neo-card bg-neo-white">
-          <h3 class="text-lg font-bold text-neo-black mb-4">❌ Without Key</h3>
-          <button
-            @click="shuffleItemsWithoutKey"
-            class="neo-button bg-neo-pink text-neo-white mb-4"
-          >
-            Shuffle Items
-          </button>
-          <div class="space-y-2">
-            <div
-              v-for="item in itemsWithoutKey"
-              :key="item.id"
-              class="neo-card bg-neo-yellow p-3 text-neo-black"
-            >
-              <ItemComponent
-                :item="item"
-                @update:value="(value) => (item.value = value)"
-              />
-            </div>
-          </div>
-          <div class="text-sm text-neo-black mt-4">
-            🔥 Notice how input values don't follow items when shuffled
-          </div>
-        </div>
-
-        <!-- With Key -->
-        <div class="neo-card bg-neo-white">
-          <h3 class="text-lg font-bold text-neo-black mb-4">✅ With Key</h3>
-          <button
-            @click="shuffleItemsWithKey"
-            class="neo-button bg-neo-green text-neo-white mb-4"
-          >
-            Shuffle Items
-          </button>
-          <div class="space-y-2">
-            <div
-              v-for="item in itemsWithKey"
-              :key="item.id"
-              class="neo-card bg-neo-blue p-3 text-neo-white"
-            >
-              <ItemComponent
-                :item="item"
-                @update:value="(value) => (item.value = value)"
-              />
-            </div>
-          </div>
-          <div class="text-sm text-neo-black mt-4">
-            ✅ Input values correctly follow items when shuffled
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- v-once Demo -->
     <section class="neo-section bg-neo-blue">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">1️⃣ V-ONCE DEMO</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">1️⃣ V-ONCE DEMO</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Without v-once -->
@@ -187,36 +63,35 @@ const vShowMountCount = ref(0);
             <label class="block text-sm font-bold text-neo-black mb-2"
               >Update Counter:</label
             >
-            <button @click="counter++" class="neo-button bg-neo-pink text-neo-white">
+            <button @click="counter++" class="neo-button bg-neo-pink text-neo-black">
               Count: {{ counter }}
             </button>
           </div>
           <div class="neo-card bg-neo-yellow p-4">
-            <h4 class="font-bold text-neo-black mb-2">Re-renders Every Time:</h4>
-            <div class="text-2xl font-bold text-neo-black">
-              {{ expensiveCalculation }}
-            </div>
             <div class="text-sm text-neo-black">
-              Calculation calls: {{ calculationCalls }}
+              Updates with each counter click!
             </div>
           </div>
         </div>
 
         <!-- With v-once -->
-        <div class="neo-card bg-neo-white">
+       <div class="neo-card bg-neo-white">
           <h3 class="text-lg font-bold text-neo-black mb-4">✅ With v-once</h3>
           <div class="mb-4">
             <label class="block text-sm font-bold text-neo-black mb-2"
-              >Counter Value:</label
+              >Update Counter:</label
             >
-            <div class="text-2xl font-bold text-neo-black">{{ counter }}</div>
+            <button @click="counter++" class="neo-button bg-neo-pink text-neo-black" v-once>
+              Count: {{ counter }}
+            </button>
           </div>
-          <div class="neo-card bg-neo-green p-4 text-neo-white">
-            <h4 class="font-bold mb-2">Rendered Only Once:</h4>
-            <div v-once class="text-2xl font-bold">{{ expensiveCalculationOnce }}</div>
-            <div class="text-sm">This won't change even if counter updates!</div>
+          <div class="neo-card bg-neo-yellow p-4">
+            <div class="text-sm text-neo-black">
+              This will not update on counter clicks!
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -229,33 +104,27 @@ const vShowMountCount = ref(0);
           <h3 class="text-lg font-bold text-neo-black mb-4">Control Panel</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Memo Dependency:</label
-              >
+              <label class="block text-sm font-bold text-neo-black mb-2">Memo Dependency:</label>
+              <input 
+                v-model="memoText"
+                class="neo-button bg-neo-blue text-neo-black w-full p-2" 
+                placeholder="Change this text"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-neo-black mb-2">Non-dependency:</label>
               <button
-                @click="memoDependency++"
-                class="neo-button bg-neo-blue text-neo-white w-full"
+                @click="nonDependency++"
+                class="neo-button bg-neo-purple text-neo-black w-full"
               >
-                Memo Dep: {{ memoDependency }}
+                Click me: {{ nonDependency }}
               </button>
             </div>
             <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Other Value:</label
-              >
-              <button
-                @click="otherValue++"
-                class="neo-button bg-neo-purple text-neo-white w-full"
-              >
-                Other: {{ otherValue }}
-              </button>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-neo-black mb-2"
-                >Render Count:</label
-              >
-              <div class="text-2xl font-bold text-neo-black text-center">
-                {{ memoRenderCount }}
+              <label class="block text-sm font-bold text-neo-black mb-2">Compare Renders:</label>
+              <div class="text-sm font-bold text-neo-black">
+                Standard: {{ standardRenderCount }}<br>
+                Optimized: {{ memoRenderCount }}
               </div>
             </div>
           </div>
@@ -265,36 +134,30 @@ const vShowMountCount = ref(0);
           <!-- Without v-memo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">❌ Without v-memo</h3>
-            <div class="neo-card bg-neo-pink p-4 text-neo-white">
-              <ExpensiveComponent
-                :memoDep="memoDependency"
-                :otherVal="otherValue"
-                @render="memoRenderCount++"
-              />
+            <div class="neo-card bg-neo-pink p-4 text-neo-black">
+              <div @vue:render="standardRenderCount++">
+                <p class="text-lg font-bold">Text: {{ memoText }}</p>
+                <p class="mt-2">Non-dependency: {{ nonDependency }}</p>
+                <p class="mt-4 text-sm">This renders on EVERY state change</p>
+              </div>
             </div>
             <div class="text-sm text-neo-black mt-2">
-              🔥 Re-renders on ANY prop change
+              🔥 Re-renders when ANY reactive value changes
             </div>
           </div>
 
           <!-- With v-memo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">✅ With v-memo</h3>
-            <div
-              v-memo="[memoDependency]"
-              class="neo-card bg-neo-green p-4 text-neo-white"
-            >
-              <ExpensiveComponent
-                :memoDep="memoDependency"
-                :otherVal="otherValue"
-                @render="memoOptimizedRenderCount++"
-              />
+            <div class="neo-card bg-neo-green p-4 text-neo-black">
+              <div v-memo="[memoText]" @vue:render="memoRenderCount++">
+                <p class="text-lg font-bold">Text: {{ memoText }}</p>
+                <p class="mt-2">Non-dependency: {{ nonDependency }}</p>
+                <p class="mt-4 text-sm">This only renders when text changes</p>
+              </div>
             </div>
             <div class="text-sm text-neo-black mt-2">
-              ✅ Only re-renders when memoDependency changes
-            </div>
-            <div class="text-sm text-neo-black">
-              Optimized renders: {{ memoOptimizedRenderCount }}
+              ✅ Only re-renders when memoText changes
             </div>
           </div>
         </div>
@@ -303,7 +166,7 @@ const vShowMountCount = ref(0);
 
     <!-- v-show vs v-if Demo -->
     <section class="neo-section bg-neo-purple">
-      <h2 class="text-2xl font-bold mb-6 text-neo-white">👁️ V-SHOW vs V-IF DEMO</h2>
+      <h2 class="text-2xl font-bold mb-6 text-neo-black">👁️ V-SHOW vs V-IF DEMO</h2>
 
       <div class="space-y-6">
         <div class="neo-card bg-neo-white">
@@ -311,14 +174,14 @@ const vShowMountCount = ref(0);
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               @click="showVIf = !showVIf"
-              class="neo-button text-neo-white"
+              class="neo-button text-neo-black"
               :class="showVIf ? 'bg-neo-green' : 'bg-neo-pink'"
             >
               v-if: {{ showVIf ? "SHOWN" : "HIDDEN" }}
             </button>
             <button
               @click="showVShow = !showVShow"
-              class="neo-button text-neo-white"
+              class="neo-button text-neo-black"
               :class="showVShow ? 'bg-neo-green' : 'bg-neo-pink'"
             >
               v-show: {{ showVShow ? "SHOWN" : "HIDDEN" }}
@@ -332,7 +195,7 @@ const vShowMountCount = ref(0);
             <h3 class="text-lg font-bold text-neo-black mb-4">🔄 Using v-if</h3>
             <div class="neo-card bg-neo-yellow p-4 min-h-[200px]">
               <div v-if="showVIf">
-                <HeavyComponent
+                <MountUnmount
                   title="v-if Component"
                   @mount="vIfMountCount++"
                   @unmount="vIfUnmountCount++"
@@ -352,9 +215,9 @@ const vShowMountCount = ref(0);
           <!-- v-show Demo -->
           <div class="neo-card bg-neo-white">
             <h3 class="text-lg font-bold text-neo-black mb-4">👁️ Using v-show</h3>
-            <div class="neo-card bg-neo-blue text-neo-white p-4 min-h-[200px]">
+            <div class="neo-card bg-neo-blue text-neo-black p-4 min-h-[200px]">
               <div v-show="showVShow">
-                <HeavyComponent title="v-show Component" @mount="vShowMountCount++" />
+                <MountUnmount title="v-show Component" @mount="vShowMountCount++" />
               </div>
             </div>
             <div class="text-sm text-neo-black mt-2">

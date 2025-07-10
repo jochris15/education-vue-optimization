@@ -4,8 +4,10 @@ import HomeView from '@/views/HomeView.vue'
 import ReactivityDemo from '@/views/ReactivityDemo.vue'
 import DebounceThrottleDemo from '@/views/DebounceThrottleDemo.vue'
 import ReRenderDemo from '@/views/ReRenderDemo.vue'
-import LazyLoadingDemo from '@/views/LazyLoadingDemo.vue'
 
+// lazy loading from router
+// only load this component when the route is visited
+const LazyLoadingDemo = () => import('@/views/LazyLoadingDemo.vue')
 
 const routes = [
     {

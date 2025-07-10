@@ -1,31 +1,3 @@
-<template>
-  <div>
-    <h3 class="text-xl font-bold text-neo-black mb-4">📊 Interactive Chart Component</h3>
-    <div class="grid grid-cols-2 gap-4">
-      <div class="neo-card bg-neo-pink p-4">
-        <canvas ref="chartCanvas" width="200" height="150" class="w-full"></canvas>
-      </div>
-      <div class="space-y-2">
-        <div class="text-sm text-neo-black">
-          <strong>Chart Type:</strong> {{ chartType }}
-        </div>
-        <div class="text-sm text-neo-black">
-          <strong>Data Points:</strong> {{ dataPoints.length }}
-        </div>
-        <div class="text-sm text-neo-black">
-          <strong>Last Updated:</strong> {{ lastUpdated }}
-        </div>
-        <button 
-          @click="generateNewData"
-          class="neo-button bg-neo-blue text-neo-white text-sm"
-        >
-          Refresh Data
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 
@@ -85,3 +57,33 @@ onMounted(() => {
   }, 500)
 })
 </script>
+
+<template>
+  <div>
+    <h3 class="text-xl font-bold text-neo-black mb-4">📊 Interactive Chart Component</h3>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="neo-card bg-neo-pink p-4">
+        <canvas ref="chartCanvas" width="200" height="150" class="w-full"></canvas>
+      </div>
+      <div class="space-y-2">
+        <div class="text-sm text-neo-black">
+          <strong>Chart Type:</strong> {{ chartType }}
+        </div>
+        <div class="text-sm text-neo-black">
+          <strong>Data Points:</strong> {{ dataPoints.length }}
+        </div>
+        <div class="text-sm text-neo-black">
+          <strong>Last Updated:</strong> {{ lastUpdated }}
+        </div>
+        <button 
+          @click="generateNewData"
+          class="neo-button bg-neo-blue text-neo-white text-sm"
+        >
+          Refresh Data
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+

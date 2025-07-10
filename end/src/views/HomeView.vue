@@ -46,7 +46,7 @@ const demos = [
     description: "Optimize component rendering",
     icon: "🎯",
     bgColor: "bg-neo-yellow",
-    techniques: ["v-memo", "v-once", "v-show", "key"],
+    techniques: ["v-memo", "v-once", "v-show"],
   },
   {
     path: "/lazy-loading",
@@ -54,7 +54,7 @@ const demos = [
     description: "Load components when needed",
     icon: "🚀",
     bgColor: "bg-neo-green",
-    techniques: ["defineAsyncComponent", "dynamic imports"],
+    techniques: ["defineAsyncComponent", "dynamic imports", "suspense"],
   },
 ];
 
@@ -79,8 +79,8 @@ onUpdated(() => {
 
     <!-- Why Optimization Section -->
     <section class="neo-section">
-      <h2 class="text-3xl font-bold mb-6 text-neo-yellow">🤔 WHY NEED OPTIMIZATION?</h2>
-      <p class="text-xl mb-6">
+      <h2 class="text-3xl font-bold mb-6 text-neo-black">🤔 WHY NEED OPTIMIZATION?</h2>
+      <p class="text-xl mb-6 text-neo-black">
         Vue.js is designed to be lightweight and fast, but complex applications without
         proper optimization can suffer from performance issues.
       </p>
