@@ -47,18 +47,37 @@ const loadComponent = async (componentName) => {
         </div>
       </div>
 
-      <div class="neo-card bg-neo-white">
+      <div class="neo-card bg-neo-white mb-4">
         <h3 class="text-xl font-bold text-neo-black mb-4">🛣️ Router Lazy Loading</h3>
         <p class="text-neo-black mb-4">
           Load route components only when the route is visited, reducing initial bundle size.
         </p>
         <div class="bg-neo-purple text-neo-black p-3 border-2 border-neo-black">
           <code class="text-sm">
-{
-  path: '/about',
-  name: 'About',
-  component: () => import('./views/ComponentName.vue')
-}
+          {
+            path: '/about',
+            name: 'About',
+            component: () => import('./views/ComponentName.vue')
+          }
+          </code>
+        </div>
+      </div>
+
+      <div class="neo-card bg-neo-white">
+        <h3 class="text-xl font-bold text-neo-black mb-4">⏳ Vue Suspense Component</h3>
+        <p class="text-neo-black mb-4">
+          Handle loading states elegantly while async components are being fetched.
+        </p>
+        <div class="bg-neo-purple text-neo-black p-3 border-2 border-neo-black">
+          <code class="text-sm">
+            &lt;Suspense&gt;
+              &lt;template #default&gt;
+                &lt;AsyncComponent /&gt;
+              &lt;/template&gt;
+              &lt;template #fallback&gt;
+                Loading...
+              &lt;/template&gt;
+            &lt;/Suspense&gt;
           </code>
         </div>
       </div>

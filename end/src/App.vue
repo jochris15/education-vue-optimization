@@ -36,7 +36,7 @@ const navLinks = [
     <!-- Footer -->
     <footer class="bg-neo-purple text-neo-white p-6 mt-12 border-t-8 border-neo-black">
       <div class="container mx-auto text-center">
-        <p class="text-sm mt-2">Vue.js Optimization Techniques Demo By Hacktiv8</p>
+        <p class="text-sm mt-2 text-neo-black">Vue.js Optimization Techniques Demo By Joshua C</p>
       </div>
     </footer>
   </div>
